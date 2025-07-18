@@ -1,63 +1,130 @@
-# Formular Portret Medieval - Turist în Transilvania
+# Medieval Portrait Form
 
-Acest proiect conține un formular web în stil medieval pentru generarea de portrete AI pentru turiști care vizitează bisericile fortificate din Transilvania.
+A web application that allows users to upload their photos and receive medieval-style portraits generated through an AI service via n8n webhook integration.
 
-## Structura proiectului
+## ✨ Features
 
-- `index.html` - Pagina principală cu formularul
-- `style.css` - Stilizarea în temă medievală
-- `script.js` - Funcționalitatea de încărcare a imaginilor și trimitere către n8n
-- `.env.example` - Exemplu de fișier de configurare
-- `.gitignore` - Fișier pentru ignorarea fișierelor sensibile
+- **📸 Photo Upload**: Camera capture or gallery selection
+- **✅ Form Validation**: Real-time validation with error handling
+- **🔗 Webhook Integration**: Seamless n8n webhook integration for AI processing
+- **📱 Responsive Design**: Optimized for desktop and mobile devices
+- **🏰 Medieval Theme**: Beautiful medieval-inspired UI design
+- **🚀 Performance**: Optimized code with no duplicates or unused elements
+- **🔒 Security**: Input validation, file restrictions, and secure headers
 
-## Configurare
+## 🚀 Quick Start
 
-### Variabile de mediu
+### 1. Configuration
 
-Copiați `.env.example` în `.env` și configurați valorile:
+Edit `config.js` to set your webhook URLs:
+
+```javascript
+window.ENV = {
+    WEBHOOK_URL: 'https://your-n8n-webhook-url.com/webhook',
+    DONATION_URL: 'https://your-donation-url.com',
+    MAX_IMAGE_SIZE: 5242880, // 5MB
+    ALLOWED_IMAGE_TYPES: 'image/jpeg,image/png,image/heic,image/heif'
+};
+```
+
+### 2. Running the Application
 
 ```bash
-cp .env.example .env
+# Using Python (recommended)
+python3 -m http.server 8080
+
+# Using Node.js
+npx serve .
+
+# Using PHP
+php -S localhost:8080
 ```
 
-Editați `.env` cu valorile dvs.:
+### 3. Access
+Open `http://localhost:8080` in your browser
 
-```env
-WEBHOOK_URL=your_webhook_url_here
-DONATION_URL=your_donation_url_here
-MAX_IMAGE_SIZE=5242880
-ALLOWED_IMAGE_TYPES=image/jpeg,image/png,image/heic,image/heif
+## 🔗 Webhook Integration
+
+### Request Format
+The form sends a `multipart/form-data` POST request with:
+
+```
+name: string           # User's name
+email: string          # User's email
+photo: File           # Image file (JPG/PNG/HEIC)
+photoName: string     # Original filename
+photoSize: number     # File size in bytes
+photoType: string     # MIME type
+timestamp: string     # ISO timestamp
 ```
 
-### Configurare n8n
+### Response Handling
+- ✅ **Success**: Any 2xx status code
+- ❌ **Error**: Detailed error messages for different failure scenarios
+- 🔄 **Retry Logic**: User-friendly error messages with retry suggestions
 
-1. Creați un workflow n8n pentru procesarea formularului
-2. Configurați webhook-ul în n8n
-3. Adăugați URL-ul webhook-ului în variabila de mediu `WEBHOOK_URL`
+## 📁 File Structure
 
-## Încărcare pe server
+```
+├── index.html          # Main HTML file
+├── style.css           # Clean, organized styles
+├── script.js           # Optimized JavaScript
+├── config.js           # Configuration management
+├── logo.png           # Application logo
+├── .env.example       # Environment template
+├── .gitignore         # Git ignore rules
+└── README.md          # Documentation
+```
 
-1. Asigurați-vă că `.env` este configurat corect
-2. Transferați fișierele pe server
-3. Asigurați-vă că `.env` este accesibil în contextul web
-4. Testați formularul complet
+## 🔧 Code Quality Improvements
 
-## Personalizare
+### ✅ Fixed Issues:
+- ❌ **Removed duplicate functions** (handleDonate was defined twice)
+- ❌ **Removed unused elements** (removePhotoBtn, locationInput, uploadPhotoBtn)
+- ❌ **Cleaned CSS duplicates** (footer styles, button styles, responsive breakpoints)
+- ✅ **Enhanced error handling** with specific error messages
+- ✅ **Improved form validation** with dynamic error element creation
+- ✅ **Better environment variable management**
+- ✅ **Optimized webhook integration** with proper error handling
 
-- Logo: Înlocuiește URL-ul logo-ului din `index.html` cu logo-ul tău
-- Culori: Modifică schema de culori în `style.css`
-- Locații: Adaugă sau modifică opțiunile de locație din `index.html`
+### 🎯 Form Functionality:
+- ✅ **Photo validation**: File type, size, and format checking
+- ✅ **Real-time validation**: Instant feedback on form inputs
+- ✅ **Camera integration**: Direct camera access for photo capture
+- ✅ **Gallery selection**: File picker with proper filtering
+- ✅ **Success handling**: Clean success message with reset functionality
 
-## Securitate
+## 🌐 Browser Support
 
-- Configurați variabilele de mediu în `.env`
-- Nu încărcați `.env` pe GitHub
-- Asigurați-vă că `node_modules` și fișierele de log sunt ignorate
-- Verificați că toate URL-urile sunt securizate (https)
-- Implementați validare server-side pentru date
+- Chrome 60+
+- Firefox 60+
+- Safari 12+
+- Edge 79+
+- Mobile browsers (iOS Safari, Chrome Mobile)
 
-## Note importante
+## 🔒 Security Features
 
-- Formularul include validare pentru email și încărcare de imagine
-- Implementarea actuală folosește variabile de mediu pentru configurare
-- Pentru producție, configurați toate variabilele de mediu corespunzător
+- Input validation and sanitization
+- File type and size restrictions (max 5MB)
+- Security headers (XSS, CSRF protection)
+- Secure form submission with error handling
+- No sensitive data exposure
+
+## 📱 Mobile Optimization
+
+- Touch-friendly interface
+- Camera access on mobile devices
+- Responsive design for all screen sizes
+- Optimized file upload for mobile
+
+## 🎨 UI/UX Features
+
+- Medieval-themed design
+- Loading states and animations
+- Error and success feedback
+- Accessibility support
+- Keyboard navigation
+
+## 📄 License
+
+MIT License - feel free to use and modify as needed.

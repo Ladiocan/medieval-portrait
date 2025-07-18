@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Termeni & Condiții</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem 1rem 4rem;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+      h2 {
+        margin-top: 1.5rem;
+        font-size: 1.25rem;
+      }
+      p, li {
+        line-height: 1.6;
+      }
+      ul {
+        padding-left: 1.2rem;
+      }
+      .lang-selector {
+        text-align: right;
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img src="assets/img/logo.png" alt="Logo" class="logo" />
+        <h1 data-i18n="title">Termeni & Condiții și Politica GDPR</h1>
+      </header>
+
+      <div class="lang-selector">
+        <label for="lang">Language:</label>
+        <select id="lang">
+          <option value="ro">RO</option>
+          <option value="en">EN</option>
+          <option value="de">DE</option>
+          <option value="hu">HU</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+          <option value="it">IT</option>
+          <option value="pl">PL</option>
+        </select>
+      </div>
+
+      <main id="termsContent"></main>
+    </div>
+
+    <script type="module">
+      const translations = {
+        ro: {
+          title: 'Termeni & Condiții și Politica GDPR',
+          content: `
+          <h2>1. Scopul aplicației</h2>
+          <p>Aplicația „Portret Medieval” vă permite să încărcați o fotografie și să primiți un portret generat cu ajutorul inteligenței artificiale. Serviciul este furnizat de Turist în Transilvania în scop de divertisment și promovare turistică.</p>
+          <h2>2. Date colectate</h2>
+          <ul>
+            <li>Nume și prenume</li>
+            <li>Adresă de email</li>
+            <li>Fotografia încărcată și generată</li>
+            <li>Parametrul locație (QR code)</li>
+            <li>Metadate tehnice (timestamp, IP scurtat)</li>
+          </ul>
+          <h2>3. Temeiul legal</h2>
+          <p>Prelucrarea datelor se bazează pe consimțământul explicit pe care îl acordați prin trimiterea formularului și bifarea căsuței de acord.</p>
+          <h2>4. Cum folosim datele</h2>
+          <ul>
+            <li>Generăm portretul și îl afișăm în aplicație.</li>
+            <li>Trimitem portretul pe email, la adresa furnizată.</li>
+            <li>Păstrăm imaginile pe AWS S3 în folderele <em>uploads/originals</em> și <em>uploads/ai-generated</em>.</li>
+            <li>Înregistrăm intrarea (fără fotografie) într-un Google Sheet pentru statistici.</li>
+          </ul>
+          <h2>5. Stocare și ștergere</h2>
+          <p>Imaginile sunt păstrate maximum 30 de zile, după care sunt șterse automat. Înregistrările statistice pot fi păstrate pe termen nelimitat.</p>
+          <h2>6. Terți implicați</h2>
+          <ul>
+            <li><strong>AWS S3</strong> – stocare imagini</li>
+            <li><strong>Replicate</strong> – generare AI</li>
+            <li><strong>n8n</strong> – orchestrare workflow</li>
+            <li><strong>Google</strong> – e-mail și Sheets</li>
+          </ul>
+          <h2>7. Drepturile dumneavoastră</h2>
+          <p>Conform GDPR, aveți dreptul la acces, rectificare, ștergere, restricționare și portabilitate. Ne puteți contacta la <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a>.</p>
+          <h2>8. Limitarea răspunderii</h2>
+          <p>Serviciul este oferit „ca atare”. Nu garantăm acuratețea absolută a portretelor generate și nu vom fi răspunzători pentru folosirea lor în alte scopuri.</p>
+          <h2>9. Modificări</h2>
+          <p>Putem actualiza acești termeni oricând. Versiunea curentă va fi întotdeauna disponibilă la acest URL.</p>
+          `,
+        },
+        en: {
+          title: 'Terms & Conditions and GDPR Policy',
+          content: `
+          <h2>1. Purpose of the app</h2>
+          <p>The “Medieval Portrait” app lets you upload a photo and receive an AI-generated medieval portrait. The service is provided by Turist în Transilvania for entertainment and tourism promotion.</p>
+          <h2>2. Data we collect</h2>
+          <ul>
+            <li>Your name</li>
+            <li>Email address</li>
+            <li>The uploaded photo and the generated portrait</li>
+            <li>Location parameter from QR code</li>
+            <li>Technical metadata (timestamp, shortened IP)</li>
+          </ul>
+          <h2>3. Legal basis</h2>
+          <p>Processing is based on the explicit consent you give by submitting the form and ticking the agreement box.</p>
+          <h2>4. How we use the data</h2>
+          <ul>
+            <li>Generate and display your portrait in the app.</li>
+            <li>Email the portrait to the provided address.</li>
+            <li>Store images on AWS S3 in <em>uploads/originals</em> and <em>uploads/ai-generated</em>.</li>
+            <li>Log the entry (without the photo) to a Google Sheet for statistics.</li>
+          </ul>
+          <h2>5. Storage & deletion</h2>
+          <p>Images are stored for up to 30 days and then automatically deleted. Statistical logs may be kept indefinitely.</p>
+          <h2>6. Third-party processors</h2>
+          <ul>
+            <li><strong>AWS S3</strong> – image storage</li>
+            <li><strong>Replicate</strong> – AI generation</li>
+            <li><strong>n8n</strong> – workflow orchestration</li>
+            <li><strong>Google</strong> – email & Sheets</li>
+          </ul>
+          <h2>7. Your rights</h2>
+          <p>Under GDPR you have the right to access, rectify, delete, restrict or port your data. Contact us at <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a>.</p>
+          <h2>8. Liability</h2>
+          <p>The service is provided “as is”. We do not guarantee absolute accuracy of generated portraits and are not liable for their usage elsewhere.</p>
+          <h2>9. Changes</h2>
+          <p>We may update these terms at any time. The current version will always be available at this URL.</p>
+          `,
+        },
+        // Quick machine-translated summaries for other languages
+        de: {
+          title: 'Allgemeine Geschäftsbedingungen & GDPR-Richtlinie',
+          content: '<p>Für die deutsche Version konsultieren Sie bitte die englische oder rumänische Fassung. Ihre Daten werden gemäß DSGVO verarbeitet.</p>',
+        },
+        hu: {
+          title: 'Felhasználási feltételek és GDPR',
+          content: '<p>A teljes magyar változat hamarosan. Az adatait a GDPR előírásai szerint kezeljük.</p>',
+        },
+        es: {
+          title: 'Términos y Condiciones y Política GDPR',
+          content: '<p>La versión completa en español estará disponible pronto. Sus datos se procesan de acuerdo con el GDPR.</p>',
+        },
+        fr: {
+          title: 'Conditions générales et politique GDPR',
+          content: '<p>La version française complète sera bientôt disponible. Vos données sont traitées conformément au RGPD.</p>',
+        },
+        it: {
+          title: 'Termini e Condizioni e Informativa GDPR',
+          content: '<p>La versione italiana completa sarà disponibile a breve. I tuoi dati sono trattati in conformità al GDPR.</p>',
+        },
+        pl: {
+          title: 'Regulamin i Polityka RODO',
+          content: '<p>Pełna polska wersja będzie dostępna wkrótce. Twoje dane są przetwarzane zgodnie z RODO.</p>',
+        },
+      };
+
+      function applyTranslations(lang) {
+        const dict = translations[lang] || translations.ro;
+        document.querySelector('[data-i18n="title"]').textContent = dict.title;
+        document.getElementById('termsContent').innerHTML = dict.content;
+      }
+
+      // Detect lang from query param or fallback to select value
+      const params = new URLSearchParams(window.location.search);
+      const initialLang = params.get('lang') || document.documentElement.lang || 'ro';
+      const select = document.getElementById('lang');
+      select.value = initialLang;
+      applyTranslations(initialLang);
+
+      select.addEventListener('change', (e) => {
+        applyTranslations(e.target.value);
+      });
+    </script>
+  </body>
+</html>

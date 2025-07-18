@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Choose Language | Turist în Transilvania</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+      .lang-wrapper {
+        max-width: 600px;
+        margin: 4rem auto;
+        text-align: center;
+      }
+      .lang-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+      .lang-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        border-radius: 10px;
+        background: var(--gray-100);
+        transition: var(--transition);
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--dark);
+        box-shadow: var(--shadow);
+      }
+      .lang-btn:hover {
+        background: var(--primary-light);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+      .lang-btn img {
+        width: 48px;
+        height: 36px;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+    </style>
+    <style>
+      /* Futuristic medieval button polish */
+      .lang-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #ffffff 0%, #f3f2ef 100%);
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        backdrop-filter: blur(6px);
+        color: var(--dark);
+        text-decoration: none;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      }
+      .lang-btn:hover {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 0 10px var(--primary-neon);
+        transform: translateY(-4px) scale(1.03);
+      }
+      .lang-btn img {
+        width: 40px;
+        height: 28px;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img src="assets/img/logo.png" alt="Logo" class="logo" />
+        
+        <h2 style="margin-top:0.5rem;font-size:1.25rem;font-weight:500;color:var(--gray-700)">Choose your language</h2>
+      </header>
+
+      <main>
+        <div class="lang-wrapper">
+          <div class="lang-grid">
+            <!-- Romanian -->
+            <a class="lang-btn" href="portrait.html?lang=ro">
+              <img src="https://flagcdn.com/w160/ro.png" alt="Română" />
+              Română
+            </a>
+            <!-- English -->
+            <a class="lang-btn" href="portrait.html?lang=en">
+              <img src="https://flagcdn.com/w160/gb.png" alt="English" />
+              English
+            </a>
+            <!-- German -->
+            <a class="lang-btn" href="portrait.html?lang=de">
+              <img src="https://flagcdn.com/w160/de.png" alt="Deutsch" />
+              Deutsch
+            </a>
+            <!-- Hungarian -->
+            <a class="lang-btn" href="portrait.html?lang=hu">
+              <img src="https://flagcdn.com/w160/hu.png" alt="Magyar" />
+              Magyar
+            </a>
+            <!-- Spanish -->
+            <a class="lang-btn" href="portrait.html?lang=es">
+              <img src="https://flagcdn.com/w160/es.png" alt="Español" />
+              Español
+            </a>
+            <!-- French -->
+            <a class="lang-btn" href="portrait.html?lang=fr">
+              <img src="https://flagcdn.com/w160/fr.png" alt="Français" />
+              Français
+            </a>
+            <!-- Italian -->
+            <a class="lang-btn" href="portrait.html?lang=it">
+              <img src="https://flagcdn.com/w160/it.png" alt="Italiano" />
+              Italiano
+            </a>
+            <!-- Polish -->
+            <a class="lang-btn" href="portrait.html?lang=pl">
+              <img src="https://flagcdn.com/w160/pl.png" alt="Polski" />
+              Polski
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

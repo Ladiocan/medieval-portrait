@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; img-src 'self' https://cdn.buymeacoffee.com data: blob:; connect-src 'self' https://ladiocan.app.n8n.cloud https://corsproxy.io;"
+    />
+    <title>Portret Medieval</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img src="assets/img/logo.png" alt="Logo" class="logo" />
+        <h1>Portret Medieval</h1>
+      </header>
+
+      <main>
+        <form id="portraitForm" class="simple-form" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="name" id="label-name" data-translate-key="labelName">Numele tău</label>
+            <input type="text" id="name" name="name" data-translate-placeholder-key="placeholderName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email" id="label-email" data-translate-key="labelEmail">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="adresa.ta@email.com"
+              data-i18n="placeholderEmail"
+              required
+            />
+          </div>
+
+          <div class="form-group photo-upload">
+            <label for="photo" id="label-photo" data-translate-key="labelPhoto">Fotografia ta</label>
+            <input
+              type="file"
+              id="photo"
+              name="file"
+              accept="image/*"
+              style="display: none"
+            />
+            <div class="upload-options">
+              <button type="button" class="btn primary" id="uploadBtn" data-translate-key="btnUpload"><i class="fas fa-upload"></i> Încarcă imagine</button>
+              <button type="button" class="btn secondary" id="selfieBtn" data-translate-key="btnSelfie"><i class="fas fa-camera"></i> Fă un selfie</button>
+            </div>
+            <p id="photoFilename" class="file-name"></p>
+            <p class="hint" id="hint-photo"><small data-translate-key="hintPhoto">Formate acceptate: JPG, PNG, HEIC (max 15MB)</small></p>
+            <div id="photo-error" class="error-message" style="display: none"></div>
+          </div>
+
+          <div class="terms">
+            <input type="checkbox" id="terms" required />
+            <label for="terms" data-translate-key="termsText">Sunt de acord cu <a href="terms.html" target="_blank">Termenii și Condițiile</a> și politica GDPR</label>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn" data-translate-key="submitBtn"><i class="fas fa-magic"></i> Creează portretul</button>
+        </form>
+
+        <!-- Loading overlay -->
+        <div id="loadingOverlay">
+          <div class="loading-content">
+            <h3 data-translate-key="loadingTitle">Se procesează portretul tău medieval</h3>
+            <div class="loading-spinner"></div>
+            <p data-translate-key="loadingText">Te rugăm să aștepți câteva momente…</p>
+          </div>
+        </div>
+
+        <!-- Success section -->
+        <div id="successMessage" class="success-message">
+          <div class="success-content">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h2 data-translate-key="successTitle">Portretul tău medieval este gata!</h2>
+
+            <div class="portrait-container">
+              <img
+                id="generatedPortrait"
+                src=""
+                alt="Portret medieval generat"
+                class="generated-portrait"
+                crossorigin="anonymous"
+              />
+            </div>
+
+            <div class="success-actions">
+              <a id="downloadBtn" href="#" class="btn primary" download style="display: none" data-translate-key="downloadBtn"><i class="fas fa-download"></i> Descarcă portretul</a>
+              <a href="https://www.buymeacoffee.com/TuristinTransilvania" target="_blank">
+                <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" />
+              </a>
+              <button id="newPortraitBtn" class="btn secondary" data-translate-key="newPortraitBtn"><i class="fas fa-plus"></i> Alt portret</button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="app-footer">
+        <div class="footer-content">
+          <p>&copy; 2025 Turist în Transilvania.</p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Config & Main script -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
