@@ -16,16 +16,25 @@ A web application that allows users to upload their photos and receive medieval-
 
 ### 1. Configuration
 
-Edit `config.js` to set your webhook URLs:
+**For Local Development:**
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
 
-```javascript
-window.ENV = {
-    WEBHOOK_URL: 'https://your-n8n-webhook-url.com/webhook',
-    DONATION_URL: 'https://your-donation-url.com',
-    MAX_IMAGE_SIZE: 5242880, // 5MB
-    ALLOWED_IMAGE_TYPES: 'image/jpeg,image/png,image/heic,image/heif'
-};
-```
+2. Edit `.env` with your actual values:
+   ```bash
+   WEBHOOK_URL=https://your-n8n-instance.app.n8n.cloud/webhook/medieval-souvenir
+   MAX_IMAGE_SIZE_MB=15
+   ALLOWED_IMAGE_TYPES=image/jpeg,image/png,image/heic,image/heif
+   DONATION_URL=https://www.buymeacoffee.com/TuristinTransilvania
+   ```
+
+**For Vercel Deployment:**
+1. Set environment variables in Vercel Dashboard:
+   - Go to Project Settings → Environment Variables
+   - Add `WEBHOOK_URL` with your n8n webhook URL
+   - The app will automatically use these values
 
 ### 2. Running the Application
 
