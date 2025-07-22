@@ -1,0 +1,11 @@
+{
+  "name": "medieval-portrait-form",
+  "version": 2,
+  "build": {
+    "env": {
+      "WEBHOOK_URL": "@webhook_url"
+    }
+  },
+  "buildCommand": "find ./public -type f -name \"*.html\" -exec sed -i \"s|%WEBHOOK_URL%|${WEBHOOK_URL}|g\" {} \\;",
+  "outputDirectory": "public"
+}
