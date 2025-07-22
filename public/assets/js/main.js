@@ -40,7 +40,7 @@ function validateForm() {
 }
 
 async function sendToWebhook(formData) {
-  const webhookUrl = cfg.webhookUrl || cfg.WEBHOOK_URL || '';
+  const webhookUrl = config.getWebhookUrl();
   if (!webhookUrl) {
     console.error('WEBHOOK_URL not configured');
     throw new Error('WEBHOOK_URL not configured');
