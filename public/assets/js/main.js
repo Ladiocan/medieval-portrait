@@ -82,26 +82,13 @@ async function sendToWebhook(formData) {
     }
     return resp.blob();
   } catch (error) {
-    console.warn('Primary fetch failed, trying CORS proxy...', error);
-    
-    // Attempt retry via CORS proxy
-    try {
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(webhookUrl)}`;
-      console.log('Retrying via proxy:', proxyUrl);
-      resp = await fetch(proxyUrl, {
-        method: 'POST',
-        body: formData,
-        mode: 'cors',
-        credentials: 'omit',
-      });
-      if (!resp.ok) {
-        throw new Error(`Proxy webhook error – HTTP ${resp.status}`);
-      }
-      return resp.blob();
-    } catch (proxyErr) {
-      console.error('Proxy fetch also failed:', proxyErr);
-      throw error; // propagate original error
+    // Clearer diagnostics without proxy fallback (aligned with CSP)
+    if (error?.message?.includes('Failed to fetch')) {
+      console.error('Fetch failed. Possible causes: CSP blocked, CORS denied, or network error.', error);
+    } else {
+      console.error('Webhook request failed:', error);
     }
+    throw error;
   }
 }
 
