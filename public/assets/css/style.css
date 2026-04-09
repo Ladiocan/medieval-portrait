@@ -1,5 +1,7 @@
 /* Modern Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -8,11 +10,16 @@
 
 :root {
     /* Color palette based on logo */
-    --primary: #8B0000;      /* Dark red */
-    --primary-light: #A52A2A; /* Slightly lighter red */
-    --secondary: #D4AF37;    /* Gold */
-    --light: #F5F5DC;       /* Beige */
-    --dark: #3E2723;        /* Dark brown */
+    --primary: #8B0000;
+    /* Dark red */
+    --primary-light: #A52A2A;
+    /* Slightly lighter red */
+    --secondary: #D4AF37;
+    /* Gold */
+    --light: #F5F5DC;
+    /* Beige */
+    --dark: #3E2723;
+    /* Dark brown */
     --white: #FFFFFF;
     --gray-100: #F3F4F6;
     --gray-200: #E5E7EB;
@@ -25,12 +32,14 @@
     --gray-900: #111827;
     --red-500: #EF4444;
     --green-500: #10B981;
-    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     --border-radius: 8px;
     --transition: all 0.2s ease;
     /* Futuristic medieval extensions */
-    --futuristic-bg-start: #290606; /* deep dark red */
-    --futuristic-bg-end: #e1e1dc;   /* black */
+    --futuristic-bg-start: #290606;
+    /* deep dark red */
+    --futuristic-bg-end: #e1e1dc;
+    /* black */
     --glass-bg: rgba(255, 255, 255, 0.08);
     --glass-border: rgba(255, 255, 255, 0.15);
     --primary-neon: #ff2838;
@@ -50,7 +59,7 @@ body {
     color: var(--dark);
     /* Futuristic gradient background with medieval dark red tones */
     background-color: var(--light);
-    
+
     padding: 0;
     margin: 0;
     min-height: 100vh;
@@ -220,7 +229,7 @@ input[type="email"]:focus {
 
 .btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn.primary {
@@ -263,7 +272,7 @@ input[type="email"]:focus {
 
 .submit-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #c9a832;
 }
 
@@ -469,7 +478,7 @@ input[type="email"]:focus {
 
 .donation-box:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .donation-box h3 {
@@ -522,8 +531,13 @@ input[type="email"]:focus {
 
 /* Loading Spinner */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-spinner {
@@ -539,8 +553,15 @@ input[type="email"]:focus {
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .success-message.show {
@@ -553,19 +574,19 @@ input[type="email"]:focus {
     .upload-options {
         flex-direction: row;
     }
-    
+
     .btn {
         width: auto;
         padding: 0.75rem 1.5rem;
     }
-    
+
     .container {
         max-width: 480px;
         margin: 20px auto;
         border-radius: var(--border-radius);
         box-shadow: var(--shadow);
     }
-    
+
     .success-actions {
         flex-direction: row;
         justify-content: center;
@@ -578,15 +599,15 @@ input[type="email"]:focus {
         padding: 2rem;
         margin: 40px auto;
     }
-    
+
     h1 {
         font-size: 2rem;
     }
-    
+
     .simple-form {
         padding: 2rem;
     }
-    
+
     .preview-container img {
         max-height: 300px;
     }
@@ -596,20 +617,20 @@ input[type="email"]:focus {
     .container {
         padding: 1rem;
     }
-    
+
     .simple-form {
         padding: 1rem;
     }
-    
+
     h1 {
         font-size: 1.5rem;
     }
-    
+
     .success-content {
         padding: 1.5rem;
         margin: 1rem;
     }
-    
+
     .success-actions {
         gap: 0.75rem;
     }
@@ -642,4 +663,98 @@ input:focus {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+}
+
+/* ─── WhatsApp CTA ──────────────────────────────────────────────────────── */
+.whatsapp-cta {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+    text-align: center;
+}
+
+.whatsapp-cta p {
+    color: var(--gray-700);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.9rem 2rem;
+    background: #25D366;
+    color: var(--white);
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+}
+
+.whatsapp-btn:hover {
+    background: #1ebe5d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+}
+
+.whatsapp-btn i {
+    font-size: 1.4rem;
+}
+
+/* ─── Already Generated Block ───────────────────────────────────────────── */
+.already-generated {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    padding: 2rem;
+}
+
+.already-generated-content {
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.already-icon {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, var(--secondary), #e6c645);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+}
+
+.already-icon i {
+    font-size: 2rem;
+    color: var(--white);
+}
+
+.already-generated-content h2 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.35rem;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+}
+
+.already-generated-content p {
+    color: var(--gray-600);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
 }

@@ -14,6 +14,25 @@ const cfg = (() => {
 // Short query-selector helper
 const $ = (sel) => document.querySelector(sel);
 
+// ─── localStorage generation limit ──────────────────────────────────────────
+const STORAGE_KEY = 'mp_generated';
+
+function hasAlreadyGenerated() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function markAsGenerated() {
+  try {
+    localStorage.setItem(STORAGE_KEY, 'true');
+  } catch {
+    console.warn('Could not write to localStorage');
+  }
+}
+
 function toggleLoading(show) {
   const overlay = $('#loadingOverlay');
   if (overlay) overlay.style.display = show ? 'flex' : 'none';
@@ -22,6 +41,13 @@ function toggleLoading(show) {
 function showSuccess(show) {
   const success = $('#successMessage');
   if (success) success.classList.toggle('show', show);
+}
+
+function showAlreadyGenerated() {
+  const form = $('#portraitForm');
+  const block = $('#alreadyGenerated');
+  if (form) form.style.display = 'none';
+  if (block) block.style.display = 'flex';
 }
 
 function validateForm() {
@@ -45,23 +71,23 @@ async function sendToWebhook(formData) {
     console.error('WEBHOOK_URL not configured');
     throw new Error('WEBHOOK_URL not configured');
   }
-  
+
   console.log('Webhook URL configured:', webhookUrl);
-  
+
   // Log formData contents for debugging
   console.log('FormData entries:');
   for (const pair of formData.entries()) {
     if (pair[0] === 'file') {
-      console.log('File entry:', { 
-        name: pair[1].name, 
-        type: pair[1].type, 
-        size: pair[1].size 
+      console.log('File entry:', {
+        name: pair[1].name,
+        type: pair[1].type,
+        size: pair[1].size
       });
     } else {
       console.log(pair[0] + ':', pair[1]);
     }
   }
-  
+
   let resp;
   try {
     resp = await fetch(webhookUrl, {
@@ -70,13 +96,13 @@ async function sendToWebhook(formData) {
       mode: 'cors',
       credentials: 'omit',
     });
-    
-    console.log('Webhook response:', { 
-      status: resp.status, 
+
+    console.log('Webhook response:', {
+      status: resp.status,
       statusText: resp.statusText,
       ok: resp.ok
     });
-    
+
     if (!resp.ok) {
       throw new Error(`Webhook error – HTTP ${resp.status}`);
     }
@@ -117,6 +143,12 @@ async function handleSubmit(e) {
     return;
   }
 
+  // Check localStorage limit
+  if (hasAlreadyGenerated()) {
+    showAlreadyGenerated();
+    return;
+  }
+
   const form = e.currentTarget;
   const submitBtn = form.querySelector('.submit-btn');
   if (submitBtn) {
@@ -146,6 +178,9 @@ async function handleSubmit(e) {
     const blob = await sendToWebhook(formData);
     const blobUrl = URL.createObjectURL(blob);
     renderPortrait(blobUrl);
+
+    // Mark as generated so next visit shows "already generated" message
+    markAsGenerated();
   } catch (err) {
     console.error(err);
     alert('A apărut o eroare la procesarea portretului. Încearcă din nou.');
@@ -158,15 +193,23 @@ async function handleSubmit(e) {
   }
 }
 
+// ─── WhatsApp links ───────────────────────────────────────────────────────────
+function updateWhatsAppLinks() {
+  const url = config.getWhatsAppUrl ? config.getWhatsAppUrl(currentLang) : '#';
+  const btns = document.querySelectorAll('#whatsappBtn, #alreadyWhatsappBtn');
+  btns.forEach((btn) => {
+    btn.href = url;
+  });
+}
+
 function init() {
   const form = $('#portraitForm');
   if (form) form.addEventListener('submit', handleSubmit);
 
-  const newPortraitBtn = $('#newPortraitBtn');
-  if (newPortraitBtn) newPortraitBtn.addEventListener('click', () => {
-    location.reload();
-  });
-
+  // Check if user already generated a portrait
+  if (hasAlreadyGenerated()) {
+    showAlreadyGenerated();
+  }
 
   // photo upload buttons
   const uploadBtn = $('#uploadBtn');
@@ -202,6 +245,9 @@ function init() {
       }
     });
   }
+
+  // Set WhatsApp links
+  updateWhatsAppLinks();
 }
 
 
@@ -224,6 +270,10 @@ const translations = {
     downloadBtn: '<i class="fas fa-download"></i> Descarcă portretul',
     donateBtn: '<i class="fas fa-heart"></i> Donează',
     newPortraitBtn: '<i class="fas fa-plus"></i> Alt portret',
+    whatsappCta: 'Ai atins limita de generare pe site. Mai poți genera pe WhatsApp un portret gratuit!',
+    whatsappBtn: 'Trimite pe WhatsApp',
+    alreadyTitle: 'Ai atins limita de generare!',
+    alreadyText: 'Ai generat deja un portret pe site. Mai poți genera pe WhatsApp un portret gratuit — trimite-ne o poză!',
   },
   en: {
     labelName: 'Your Name',
@@ -242,6 +292,10 @@ const translations = {
     downloadBtn: '<i class="fas fa-download"></i> Download portrait',
     donateBtn: '<i class="fas fa-heart"></i> Donate',
     newPortraitBtn: '<i class="fas fa-plus"></i> New portrait',
+    whatsappCta: 'You\'ve reached the generation limit on the site. You can still generate a free portrait on WhatsApp!',
+    whatsappBtn: 'Send on WhatsApp',
+    alreadyTitle: 'Generation limit reached!',
+    alreadyText: 'You\'ve already generated a portrait on the site. You can still generate a free portrait on WhatsApp — send us a photo!',
   },
   de: {
     labelName: 'Dein Name',
@@ -260,6 +314,10 @@ const translations = {
     downloadBtn: '<i class="fas fa-download"></i> Porträt herunterladen',
     donateBtn: '<i class="fas fa-heart"></i> Spenden',
     newPortraitBtn: '<i class="fas fa-plus"></i> Neues Porträt',
+    whatsappCta: 'Du hast das Generierungslimit auf der Seite erreicht. Du kannst auf WhatsApp noch ein kostenloses Porträt erstellen!',
+    whatsappBtn: 'Auf WhatsApp senden',
+    alreadyTitle: 'Generierungslimit erreicht!',
+    alreadyText: 'Du hast bereits ein Porträt auf der Seite erstellt. Du kannst auf WhatsApp noch ein kostenloses Porträt generieren — schick uns ein Foto!',
   },
   hu: {
     labelName: 'Neved',
@@ -278,6 +336,10 @@ const translations = {
     downloadBtn: '<i class="fas fa-download"></i> Portré letöltése',
     donateBtn: '<i class="fas fa-heart"></i> Adományozás',
     newPortraitBtn: '<i class="fas fa-plus"></i> Új portré',
+    whatsappCta: 'Elérted a generálási limitet az oldalon. WhatsAppon még generálhatsz egy ingyenes portrét!',
+    whatsappBtn: 'Küldés WhatsAppon',
+    alreadyTitle: 'Generálási limit elérve!',
+    alreadyText: 'Már készítettél egy portrét az oldalon. WhatsAppon még generálhatsz egy ingyenes portrét — küldj nekünk egy fotót!',
   },
   es: {
     labelName: 'Tu nombre',
@@ -296,6 +358,10 @@ const translations = {
     downloadBtn: '<i class="fas fa-download"></i> Descargar retrato',
     donateBtn: '<i class="fas fa-heart"></i> Donar',
     newPortraitBtn: '<i class="fas fa-plus"></i> Nuevo retrato',
+    whatsappCta: 'Has alcanzado el límite de generación en el sitio. ¡Aún puedes generar un retrato gratis por WhatsApp!',
+    whatsappBtn: 'Enviar por WhatsApp',
+    alreadyTitle: '¡Límite de generación alcanzado!',
+    alreadyText: 'Ya generaste un retrato en el sitio. ¡Aún puedes generar un retrato gratis por WhatsApp — envíanos una foto!',
   },
   fr: {
     labelName: 'Votre nom',
@@ -314,6 +380,10 @@ const translations = {
     downloadBtn: '<i class="fas fa-download"></i> Télécharger le portrait',
     donateBtn: '<i class="fas fa-heart"></i> Faire un don',
     newPortraitBtn: '<i class="fas fa-plus"></i> Nouveau portrait',
+    whatsappCta: 'Vous avez atteint la limite de génération sur le site. Vous pouvez encore générer un portrait gratuit sur WhatsApp !',
+    whatsappBtn: 'Envoyer sur WhatsApp',
+    alreadyTitle: 'Limite de génération atteinte !',
+    alreadyText: 'Vous avez déjà généré un portrait sur le site. Vous pouvez encore générer un portrait gratuit sur WhatsApp — envoyez-nous une photo !',
   },
   it: {
     labelName: 'Il tuo nome',
@@ -332,6 +402,10 @@ const translations = {
     downloadBtn: '<i class="fas fa-download"></i> Scarica ritratto',
     donateBtn: '<i class="fas fa-heart"></i> Dona',
     newPortraitBtn: '<i class="fas fa-plus"></i> Nuovo ritratto',
+    whatsappCta: 'Hai raggiunto il limite di generazione sul sito. Puoi ancora generare un ritratto gratuito su WhatsApp!',
+    whatsappBtn: 'Invia su WhatsApp',
+    alreadyTitle: 'Limite di generazione raggiunto!',
+    alreadyText: 'Hai già generato un ritratto sul sito. Puoi ancora generare un ritratto gratuito su WhatsApp — inviaci una foto!',
   },
   pl: {
     labelName: 'Twoje imię',
@@ -350,6 +424,10 @@ const translations = {
     downloadBtn: '<i class="fas fa-download"></i> Pobierz portret',
     donateBtn: '<i class="fas fa-heart"></i> Wspomóż',
     newPortraitBtn: '<i class="fas fa-plus"></i> Nowy portret',
+    whatsappCta: 'Osiągnąłeś limit generowania na stronie. Możesz jeszcze wygenerować darmowy portret na WhatsApp!',
+    whatsappBtn: 'Wyślij na WhatsApp',
+    alreadyTitle: 'Osiągnięto limit generowania!',
+    alreadyText: 'Wygenerowałeś już portret na stronie. Możesz jeszcze wygenerować darmowy portret na WhatsApp — wyślij nam zdjęcie!',
   },
 };
 
@@ -379,6 +457,9 @@ function applyTranslations(lang) {
         }
       }
     });
+
+  // Update WhatsApp links when language changes
+  updateWhatsAppLinks();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
