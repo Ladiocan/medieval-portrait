@@ -1151,6 +1151,63 @@
           "name": "WhatsApp sender Medieval Portrait"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c967810e-9781-4d64-911b-272f8a70164d",
+              "leftValue": "={{ $('Check DB Profile').item.json.generations_count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "larger"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -500,
+        700
+      ],
+      "id": "7a91eda3-59d1-4a50-8324-df2651240564",
+      "name": "Should trigger AI Agent?"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "639183785947357",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "textBody": "(Aici va veni r\u0103spunsul din Agentul AI) \u2014 Deocamdat\u0103 sunt doar un paznic medieval \u0219i nu pot purta o conversa\u021bie. \ud83d\udee1\ufe0f Dac\u0103 vrei alt portret, po\u021bi cump\u0103ra unul nou de pe site!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        750
+      ],
+      "id": "6a8c81bb-df31-4b4a-925a-733c8bdb952f",
+      "name": "AI Agent (Placeholder)",
+      "webhookId": "6c13c895-733e-4531-85f4-1859e43507a7",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
     }
   ],
   "connections": {
@@ -1278,7 +1335,7 @@
         ],
         [
           {
-            "node": "Send message1",
+            "node": "Should trigger AI Agent?",
             "type": "main",
             "index": 0
           }
@@ -1564,6 +1621,24 @@
         [
           {
             "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should trigger AI Agent?": {
+      "main": [
+        [
+          {
+            "node": "AI Agent (Placeholder)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send message1",
             "type": "main",
             "index": 0
           }
