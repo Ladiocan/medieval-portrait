@@ -1,0 +1,1608 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1qd74kd3VkBB7-Wa8ZGo0VXK_7WNGHt2AdIigV1S0hYk",
+          "mode": "list",
+          "cachedResultName": "medieval-portrait",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qd74kd3VkBB7-Wa8ZGo0VXK_7WNGHt2AdIigV1S0hYk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "medieval-portrait",
+          "mode": "name"
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "DATA",
+              "fieldValue": "={{ $('Generate AI Image').item.json.created_at }}"
+            },
+            {
+              "fieldId": "Nume",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}"
+            },
+            {
+              "fieldId": "E-Mail/Phone",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}"
+            },
+            {
+              "fieldId": "S3 Original",
+              "fieldValue": "={{ $('Prepare Data').item.json.bucketPath }}"
+            },
+            {
+              "fieldId": "S3 Generated",
+              "fieldValue": "={{ $('Prepare Data').item.json.aiBucketPath }}"
+            },
+            {
+              "fieldId": "Status E-mail",
+              "fieldValue": "={{ $json.messages[0].id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5e15dff2-4e71-4f5b-bd1d-f0a83cd49d16",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        4944,
+        192
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6DXDrInaIh0KBq9A",
+          "name": "Google Sheets Ladislau"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Check if the image generation is complete\nconst status = $node[\"HTTP Request\"].json.status;\n\nif (status !== \"succeeded\") {\n  // If not complete, wait longer\n  return { \n    json: { \n      continue: false, \n      error: `Image generation ${status}`,\n      status: status,\n      needsRetry: true\n    } \n  };\n}\n\n// Get the output image URL\nconst outputImageUrl = $node[\"HTTP Request\"].json.output[0] || $node[\"Generate AI Image\"].json.output;\n\n// Return the data with the generated image URL\nreturn {\n  json: {\n    ...$node[\"Get Media URL\"].json,\n    generatedImageUrl: outputImageUrl,\n    continue: true,\n    status: status,\n    needsRetry: false\n  }\n};"
+      },
+      "id": "7adf7ae4-a9e8-46c0-b681-253a11ac7001",
+      "name": "Process Generated Image",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2960,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.continue }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "rightValue": true,
+              "id": "a1b32f12-8350-4361-8eac-0d79e86d6788"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e27c6d4d-f4d3-4746-8e1f-6178d5c78d54",
+      "name": "Check If Ready",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3168,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.replicate.com/v1/predictions/{{ $('Generate AI Image').item.json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2768,
+        272
+      ],
+      "id": "3e6dcd99-0a38-4d4b-b9bd-34e46865eb61",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8BfaDbdz3VeXk3nN",
+          "name": "Replicate.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "seconds"
+      },
+      "id": "e965011b-de16-4a23-8f61-f8b65153893e",
+      "name": "Wait for Generation",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        2544,
+        272
+      ],
+      "webhookId": "wait-for-ai-image-generation"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        272
+      ],
+      "id": "e41ca993-4adb-4ca3-a7ce-557d60b3b0ac",
+      "name": "WhatsApp Trigger",
+      "webhookId": "557bcfb5-3cb5-4bc6-bba0-747d08911fcb",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "Kwkn6mdtXqUKbEpX",
+          "name": "WhatsApp OAuth Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "phoneNumberId": "639183785947357",
+        "mediaPropertyName": "file",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        4512,
+        192
+      ],
+      "id": "24e6debc-4e32-4db5-a1c9-59fc401b82ca",
+      "name": "Upload media",
+      "webhookId": "5ebe7cd9-7361-470a-af8c-4ac3961c3ffd",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "url": "=https://graph.facebook.com/v19.0/{{ $json.img_id }}",
+        "options": {},
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "BEARER_TOKEN_REDACTED"
+            }
+          ]
+        }
+      },
+      "name": "Get Media URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        624,
+        272
+      ],
+      "id": "583f3345-e144-484a-bc22-b028dfcec67a",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "url": "={{$json.url}}",
+        "responseFormat": "file",
+        "options": {},
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "BEARER_TOKEN_REDACTED"
+            }
+          ]
+        }
+      },
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        784,
+        272
+      ],
+      "id": "c2ef3bbe-fdbc-43b8-92dd-c77b6f3a974b",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "639183785947357",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "messageType": "image",
+        "mediaPath": "useMediaId",
+        "mediaId": "={{ $json.id }}",
+        "additionalFields": {
+          "mediaCaption": "=Salut {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}! \ud83c\udff0\nPortretul t\u0103u medieval e gata \u2013 \u00ee\u021bi mul\u021bumim c\u0103 ai fost parte din aceast\u0103 c\u0103l\u0103torie \u00een timp! \u23f3\nDac\u0103 vrei s\u0103 sus\u021bii promovarea bisericilor fortificate din Transilvania \u0219i s\u0103 aju\u021bi la continuarea acestui proiect unic, o po\u021bi face aici:\n\ud83d\udc49 https://buymeacoffee.com/turistintransilvania \nHi {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}! \ud83c\udff0\nYour medieval portrait is ready \u2013 thank you for joining us on this journey through time! \u23f3\nIf you\u2019d like to support the promotion of Transylvania\u2019s fortified churches and help this unique project grow, you can do it here:\n\ud83d\udc49 https://buymeacoffee.com/turistintransilvania"
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        4736,
+        192
+      ],
+      "id": "f43b3fdf-a8de-428f-aac6-0c4a27fffd8f",
+      "name": "Send message",
+      "webhookId": "b5601af4-3f05-4b1d-92b0-b35074143a51",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "phoneNumberId": "639183785947357",
+        "recipientPhoneNumber": "={{ $('Switch').item.json.contacts[0].wa_id }}",
+        "template": "medieval_portrait|ro",
+        "components": {
+          "component": [
+            {
+              "type": "header",
+              "headerParameters": {
+                "parameter": [
+                  {
+                    "text": "={{ $json.name }}"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        192,
+        512
+      ],
+      "id": "6d869d46-f21a-4a88-bb0b-687bc23b1506",
+      "name": "Send template",
+      "webhookId": "f07bface-7509-4d38-9a18-c71b1598941b",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messages[0].button.text }}{{ $json.messages[0].text.body }}",
+                    "rightValue": "Da, sunt de acord",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "9319f53f-bee7-4234-89bf-192e8854c7d2"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "238d719f-e2e5-4212-a9ba-2a559377d940",
+                    "leftValue": "={{ $json.messages[0].image.id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f594f141-43cf-41d4-b07e-484d2520c5da",
+                    "leftValue": "={{ $json.messages[0].text.body }}",
+                    "rightValue": "Da, sunt de acord",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -944,
+        256
+      ],
+      "id": "37808b06-01d9-48a3-a365-c9c92f1d17a4",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "tableName": "medieval_potrait_flows",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "id",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}"
+            },
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}"
+            },
+            {
+              "fieldId": "accepted_terms",
+              "fieldValue": "true"
+            },
+            {
+              "fieldId": "img_id",
+              "fieldValue": "={{ $json?.img_id ?? 0 }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        192
+      ],
+      "id": "d6cdf31a-2a4c-43f4-bf9e-eb60424cf71d",
+      "name": "accepted terms",
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": "medieval_potrait_flows",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "id",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}"
+            },
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}"
+            },
+            {
+              "fieldId": "img_id",
+              "fieldValue": "={{ $('WhatsApp Trigger').item.json.messages[0].image.id }}"
+            },
+            {
+              "fieldId": "accepted_terms",
+              "fieldValue": "={{ $json?.accepted_terms ?? false}}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        384
+      ],
+      "id": "496a1531-9f15-4603-8fa4-060b572de686",
+      "name": "upload img",
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableName": "medieval_potrait_flows",
+        "keysUi": {
+          "keyValues": [
+            {
+              "key": "id",
+              "type": "N",
+              "value": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        192
+      ],
+      "id": "0a0665cf-6298-4755-8ccd-f0d53e9e1b48",
+      "name": "Get an item",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableName": "medieval_potrait_flows",
+        "keysUi": {
+          "keyValues": [
+            {
+              "key": "id",
+              "type": "N",
+              "value": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        384
+      ],
+      "id": "a8ff0296-bac0-4e09-93f7-5ae4c81ebd8f",
+      "name": "Get an item1",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableName": "medieval_potrait_flows",
+        "keysUi": {
+          "keyValues": [
+            {
+              "key": "id",
+              "type": "N",
+              "value": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        384
+      ],
+      "id": "3142c2f7-2cb9-4c00-9605-875e287c1a76",
+      "name": "Get an item2",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "467bb841-60bf-4572-9117-607fd174283f",
+              "leftValue": "={{ $json.accepted_terms }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "83f03827-f80c-4606-a51b-c9bc1338d57c",
+              "leftValue": "={{ $json.accepted_terms }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        384
+      ],
+      "id": "63880781-c711-4159-a06e-7111d6919599",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableName": "medieval_potrait_flows",
+        "keysUi": {
+          "keyValues": [
+            {
+              "key": "id",
+              "type": "N",
+              "value": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        192
+      ],
+      "id": "54d8f76e-9ab4-418f-8066-43764730ddd5",
+      "name": "Get an item3",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3ed240c5-93f0-4735-a514-c6f5e926d562",
+              "leftValue": "={{ $json.img_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "7dabe7a2-7f87-47fc-ab7e-ece3f8218872",
+              "leftValue": "={{ $json.img_id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        192
+      ],
+      "id": "0620dcfc-49ff-4857-bc1d-9cad3b5680e8",
+      "name": "missing img"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "639183785947357",
+        "recipientPhoneNumber": "={{ $json.messages?.[0]?.from || $json.contacts?.[0]?.wa_id }}",
+        "textBody": "Salut! Super! Abia a\u0219tept s\u0103-\u021bi transform imaginea. Trimite-mi un selfie \u0219i magia \u00eencepe! \u2728\ud83d\udcf8  Hello! Awesome! I can\u2019t wait to turn your photo into something special. Send me a selfie and let the magic begin! \u2728\ud83d\udcf8",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        560
+      ],
+      "id": "a0194a7d-e7dc-4187-b0ab-c478bbfe5777",
+      "name": "Send message1",
+      "webhookId": "7ec81565-d24e-463b-bda1-2fba584207ce",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "639183785947357",
+        "recipientPhoneNumber": "=+{{ $('Get an item 4').item.json.phone }}",
+        "textBody": "\ud83d\udee0\ufe0f Mul\u021bumim pentru r\u0103bdare! \ud83d\udc77 Imaginea ta este \u00een curs de generare. \ud83d\uddbc\ufe0f \u00ce\u021bi trimitem portretul medieval \u00een c\u00e2teva momente! ------ \ud83d\udee0\ufe0f Thank you for your patience! \ud83d\udc77 Your image is currently being generated. \ud83d\uddbc\ufe0f We\u2019ll send you your medieval portrait in just a few moments!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        2352,
+        272
+      ],
+      "id": "70fc1c9c-a1a8-4082-a9c7-905cec7401aa",
+      "name": "Send message2",
+      "webhookId": "d4c93213-8805-4d9c-b3ee-1a9f60100a2c",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "639183785947357",
+        "recipientPhoneNumber": "=+{{ $json.phone }}",
+        "textBody": "Super! Abia a\u0219tept s\u0103-\u021bi transform imaginea. Trimite-mi un selfie \u0219i magia \u00eencepe! \u2728\ud83d\udcf8  Awesome! I can\u2019t wait to turn your photo into something special. Send me a selfie and let the magic begin! \u2728\ud83d\udcf8",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        32
+      ],
+      "id": "6f4ac3f5-e504-431d-8999-a499a59e19fc",
+      "name": "Send message3",
+      "webhookId": "7ec81565-d24e-463b-bda1-2fba584207ce",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('HTTP Request').item.json.output }}",
+        "options": {
+          "response": {}
+        }
+      },
+      "id": "c988a669-beee-4645-9787-1755906867c0",
+      "name": "Download AI Image1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3568,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Construim promptul pentru AI\nconst aiPrompt = `Use the face from the input image exactly as it is, preserving every facial feature, skin pore detail, hair strand, and micro-expression with maximum fidelity. The face is the primary focal point, perfectly in focus with portrait photography sharpness and high-definition rendering. Full body standing in a cinematic medieval Transylvanian scene, wearing richly detailed authentic Saxon medieval garments with realistic fabric folds and embroidery. A realistic medieval portrait preserving the exact identity and gender of the person in the input image. ABSOLUTE RULE: Never change the person's gender. Preserve original facial structure, bone density, and gender-specific features. Medieval Transylvanian setting with fortified church, warm cinematic lighting, 85mm portrait lens, crystal-clear facial focus.`;\n\nconst negativePrompt = 'cartoon, anime, blurry, low resolution, bad anatomy, disfigured, deformed face, inaccurate facial features, extra limbs, extra fingers, cropped face, missing face, distorted face, mutated hands, wrong expression, missing eyes, low detail, exaggerated features, watermark, logo, text, unrealistic colors, unnatural proportions, bad background, broken symmetry, duplicate face';\n\nreturn {\n  json: {\n    prompt: aiPrompt,\n    negative_prompt: negativePrompt,\n    image: $input.first().json.presignedUrl,\n    sampler_name: 'Euler a',\n    steps: 35,\n    cfg_scale: 6,\n    denoising_strength: 0.4\n  }\n};"
+      },
+      "id": "4c4ef9f0-b623-4573-957c-ec78cd654c11",
+      "name": "Prepare AI Prompt + Image1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "turist-in-transilvania-medieval-portrait",
+        "fileName": "={{ 'original-uploads/' + $json.originalFilename }}",
+        "binaryPropertyName": "file",
+        "additionalFields": {}
+      },
+      "id": "27657e31-68c9-4997-8db8-1f2f19748ee6",
+      "name": "Upload Original to S",
+      "type": "n8n-nodes-base.awsS3",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        272
+      ],
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "if (!items[0].json.result || !items[0].json.result.body) {\n  throw new Error(\"Body missing in Lambda response\");\n}\n\nconst response = JSON.parse(items[0].json.result.body);\nreturn [{ json: { presignedUrl: response.presignedUrl }}];\n"
+      },
+      "id": "1d8beb59-9b0e-499a-991e-f5206686c224",
+      "name": "Parse Lambda Response1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "function": "arn:aws:lambda:eu-central-1:767397959729:function:GeneratePresignedUrl",
+        "payload": "={\n  \"bucket\": \"turist-in-transilvania-medieval-portrait\",\n  \"key\": \"{{ $('Prepare Data').item.json.bucketPath }}\"\n}\n"
+      },
+      "id": "3c5a5a55-9f7f-42bd-b222-e1805ecdcf9f",
+      "name": "Generate Presigned URL (Lambda)1",
+      "type": "n8n-nodes-base.awsLambda",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        272
+      ],
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "turist-in-transilvania-medieval-portrait",
+        "fileName": "={{ 'AI-generated/' + $('Prepare Data').item.json.aiFilename }}",
+        "additionalFields": {
+          "acl": "private"
+        }
+      },
+      "id": "37a6ab25-3845-481d-b517-cf6a647fc309",
+      "name": "Upload AI Image to S",
+      "type": "n8n-nodes-base.awsS3",
+      "typeVersion": 2,
+      "position": [
+        3776,
+        192
+      ],
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "bucketName": "turist-in-transilvania-medieval-portrait",
+        "fileKey": "={{ $('Prepare Data').item.json.aiBucketPath }}",
+        "binaryPropertyName": "file"
+      },
+      "type": "n8n-nodes-base.awsS3",
+      "typeVersion": 2,
+      "position": [
+        3984,
+        192
+      ],
+      "id": "685a2cd2-bd8e-42fc-81a1-d70a0d6ffe80",
+      "name": "Download S",
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.replicate.com/v1/predictions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "REPLICATE_API_TOKEN_REDACTED"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"version\": \"858e56734846d24469ed35a07ca2161aaf4f83588d7060e32964926e1b73b7be\",\n  \"input\": {\n    \"prompt\": \"{{ $json.prompt }}\",\n    \"image_input\": [\"{{ $json.image }}\"],\n    \"aspect_ratio\": \"1:1\",\n    \"output_format\": \"jpg\"\n  }\n}",
+        "options": {}
+      },
+      "id": "5f01867f-7cb5-4449-8589-18a7fb313fce",
+      "name": "Generate AI Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        2080,
+        272
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8BfaDbdz3VeXk3nN",
+          "name": "Replicate.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "composite",
+        "dataPropertyName": "file",
+        "dataPropertyNameComposite": "data",
+        "positionX": 725,
+        "positionY": 15,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        4352,
+        192
+      ],
+      "id": "2f8cfe23-6b06-4c86-8875-f13f65dbdd41",
+      "name": "Edit Image1"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "10O0jXxDCeawEaI5t9b_RnxjbApGTBcTO",
+          "mode": "list",
+          "cachedResultName": "small fixed logo web (1).png",
+          "cachedResultUrl": "https://drive.google.com/file/d/10O0jXxDCeawEaI5t9b_RnxjbApGTBcTO/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4160,
+        192
+      ],
+      "id": "83c2bbee-7def-4969-8b1b-d48d652b9777",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "4ZQuxHe1myuw1lUq",
+          "name": "Google Drive Ladislau"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Nod: Prepare Data (Code Node)\n\n// Prelu\u0103m primul item din WhatsApp Trigger\nconst inputItem = $input.item;\n\n// Extragem numele \u0219i WA ID-ul\nconst contact = $node[\"WhatsApp Trigger\"].json.contacts?.[0]?.profile || {};\nconst senderName = contact.name || \"Visitor\";\nconst waId = $node[\"WhatsApp Trigger\"].json.contacts?.[0]?.wa_id || \"\";\n\n// Binary image\nconst binaryKeys = Object.keys(inputItem.binary || {});\nif (binaryKeys.length === 0) {\n  throw new Error(\"\u274c Nu a fost primit niciun fi\u0219ier \u00een binary.\");\n}\n\nlet binaryFile;\nif (inputItem.binary.file) {\n  binaryFile = inputItem.binary.file;\n} else if (inputItem.binary.data) {\n  binaryFile = inputItem.binary.data;\n  inputItem.binary.file = binaryFile;\n  delete inputItem.binary.data;\n} else {\n  throw new Error(\"\u274c Fi\u0219ierul lipse\u0219te complet din binary.\");\n}\n\n// For\u021b\u0103m tipul MIME\nbinaryFile.mimeType = \"image/jpeg\";\n\n// Extragem datele din body\nlet formData = inputItem.json.body || {};\n\nconst normalize = (v) => Array.isArray(v) ? v[0] : v || \"\";\n\n// Alte c\u00e2mpuri din formular\nconst name = senderName;\nconst email = normalize(formData.email) || \"\";\nconst location = normalize(formData.location) || \"\";\nconst title = normalize(formData.title) || \"Noble\";\nconst era = normalize(formData.era) || \"Medieval Times\";\nconst style = normalize(formData.style) || \"Renaissance Portrait\";\n\n// Nume fi\u0219iere\nconst timestamp = new Date().toISOString().replace(/[:.]/g, \"-\");\nconst sanitizedName = name.replace(/[^a-zA-Z0-9]/g, \"-\").toLowerCase();\nconst originalFilename = `original-${sanitizedName}-${timestamp}.jpg`;\nconst aiFilename = `ai-${sanitizedName}-${timestamp}.png`;\n\n// Set\u0103m numele fi\u0219ierului \u00een binary\nbinaryFile.fileName = originalFilename;\n\n// Inject\u0103m \u00een output\ninputItem.json = {\n  name,\n  wa_id: waId,\n  email,\n  title,\n  era,\n  style,\n  location,\n  mimeType: \"image/jpeg\",\n  originalFilename,\n  aiFilename,\n  timestamp,\n  processId: `portrait-${Date.now()}`,\n  bucketPath: `original-uploads/${originalFilename}`,\n  aiBucketPath: `AI-generated/${aiFilename}`\n};\n\nreturn [inputItem];\n"
+      },
+      "id": "b67511f4-7b57-4559-ac59-504c6a68b45b",
+      "name": "Prepare Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableName": "medieval_potrait_flows",
+        "keysUi": {
+          "keyValues": [
+            {
+              "key": "id",
+              "type": "N",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        448,
+        272
+      ],
+      "id": "ade96ab1-221b-4bbd-b53b-9f863515a638",
+      "name": "Get an item 4",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f66b4b2a-e841-446a-a324-6fcfe3220ccc",
+              "leftValue": "={{ $json.messages }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -1168,
+        272
+      ],
+      "id": "7e0a8df1-a6ac-4f8a-8d5e-7117712eba94",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableName": "medieval_potrait_flows",
+        "keysUi": {
+          "keyValues": [
+            {
+              "key": "id",
+              "type": "N",
+              "value": "={{ $('WhatsApp Trigger').item.json.metadata.phone_number_id }}"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.awsDynamoDb",
+      "typeVersion": 1,
+      "position": [
+        -968,
+        272
+      ],
+      "id": "96921c2f-8879-4fbc-9df7-9638b4f66d72",
+      "name": "Check DB Profile",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": {
+        "aws": {
+          "id": "t7lOKxO06nWfhutw",
+          "name": "AWS (IAM) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e6169903-08f4-487b-afef-bc62803a4dad",
+              "leftValue": "={{ $json.generations_count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "larger"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -768,
+        272
+      ],
+      "id": "627fc420-5d1e-491a-8e92-c7a1fe08f7f3",
+      "name": "Has Generated Before?"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "639183785947357",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from || $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "textBody": "Ai utilizat portretul gratuit! \ud83c\udfa8 Pentru a continua s\u0103 generezi magie, te invit\u0103m s\u0103 deblochezi accesul pentru doar 5 RON. \u2728\n\ud83d\udc49 [Apas\u0103 aici pentru achizi\u021bie] (urmeaz\u0103 s-o configur\u0103m)\n\nYou have used your free portrait! \ud83c\udfa8 To continue generating magic, please unlock access for just 1 EUR. \u2728\n\ud83d\udc49 [Click here to unlock]",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -568,
+        100
+      ],
+      "id": "ae367551-4991-4435-91d4-8f24b44a5a62",
+      "name": "Send Payment Details",
+      "webhookId": "838ce6f7-677f-4c62-b2cd-da09f373177f",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "QrdBB8lS4nygLciZ",
+          "name": "WhatsApp sender Medieval Portrait"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Process Generated Image": {
+      "main": [
+        [
+          {
+            "node": "Check If Ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Ready": {
+      "main": [
+        [
+          {
+            "node": "Download AI Image1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait for Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Process Generated Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Generation": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload media": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Media URL": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Prepare Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message": {
+      "main": [
+        [
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Get an item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get an item1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "accepted terms": {
+      "main": [
+        [
+          {
+            "node": "Get an item3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "upload img": {
+      "main": [
+        [
+          {
+            "node": "Get an item2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an item": {
+      "main": [
+        [
+          {
+            "node": "accepted terms",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an item1": {
+      "main": [
+        [
+          {
+            "node": "upload img",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an item2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send template",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get an item 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an item3": {
+      "main": [
+        [
+          {
+            "node": "missing img",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "missing img": {
+      "main": [
+        [
+          {
+            "node": "Send message3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get an item 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message2": {
+      "main": [
+        [
+          {
+            "node": "Wait for Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download AI Image1": {
+      "main": [
+        [
+          {
+            "node": "Upload AI Image to S",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare AI Prompt + Image1": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Original to S": {
+      "main": [
+        [
+          {
+            "node": "Generate Presigned URL (Lambda)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Lambda Response1": {
+      "main": [
+        [
+          {
+            "node": "Prepare AI Prompt + Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Presigned URL (Lambda)1": {
+      "main": [
+        [
+          {
+            "node": "Parse Lambda Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload AI Image to S": {
+      "main": [
+        [
+          {
+            "node": "Download S",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download S": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Image": {
+      "main": [
+        [
+          {
+            "node": "Send message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image1": {
+      "main": [
+        [
+          {
+            "node": "Upload media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Edit Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Data": {
+      "main": [
+        [
+          {
+            "node": "Upload Original to S",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an item 4": {
+      "main": [
+        [
+          {
+            "node": "Get Media URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Check DB Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check DB Profile": {
+      "main": [
+        [
+          {
+            "node": "Has Generated Before?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Generated Before?": {
+      "main": [
+        [
+          {
+            "node": "Send Payment Details",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "WhatsApp Trigger": [
+      {
+        "messaging_product": "whatsapp",
+        "metadata": {
+          "display_phone_number": "40771229487",
+          "phone_number_id": "639183785947357"
+        },
+        "contacts": [
+          {
+            "profile": {
+              "name": "Ladislau Ciocan"
+            },
+            "wa_id": "40749680770"
+          }
+        ],
+        "messages": [
+          {
+            "from": "40749680770",
+            "id": "wamid.HBgLNDA3NDk2ODA3NzAVAgASGBQzQjdBMDgzN0RBQkYwOTgzQUQxRgA=",
+            "timestamp": "1775738749",
+            "text": {
+              "body": "test"
+            },
+            "type": "text"
+          }
+        ],
+        "field": "messages"
+      }
+    ]
+  },
+  "meta": {
+    "instanceId": "a4871780865ef2b79bdab96c154b6dbc56db84620449ba6ffd132b26501cf8fe"
+  }
+}
