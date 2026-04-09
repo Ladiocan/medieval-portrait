@@ -1133,7 +1133,7 @@
         "operation": "send",
         "phoneNumberId": "639183785947357",
         "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from || $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
-        "textBody": "Ai utilizat portretul gratuit! \ud83c\udfa8 Pentru a continua s\u0103 generezi magie, te invit\u0103m s\u0103 deblochezi accesul pentru doar 5 RON. \u2728\n\ud83d\udc49 [Apas\u0103 aici pentru achizi\u021bie] (urmeaz\u0103 s-o configur\u0103m)\n\nYou have used your free portrait! \ud83c\udfa8 To continue generating magic, please unlock access for just 1 EUR. \u2728\n\ud83d\udc49 [Click here to unlock]",
+        "textBody": "Ai utilizat portretul gratuit! \ud83c\udfa8 Pentru a continua s\u0103 generezi magie, te rug\u0103m s\u0103 achi\u021bi contravaloarea de 5 RON acces\u00e2nd acest link securizat Netopia: \n\ud83d\udc49 https://mpy.ro/a8sbfa1ht?language=ro\n\nDup\u0103 efectuarea pl\u0103\u021bii, trimite-ne aici un nou selfie! \u2728\n\n----\n\nYou have used your free portrait! \ud83c\udfa8 To continue generating magic, please unlock access for just 1 EUR using this secure Netopia link:\n\ud83d\udc49 https://mpy.ro/a8sbfa1ht?language=en\n\nAfter payment, send us your new selfie here! \u2728",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.whatsApp",
