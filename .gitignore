@@ -21,6 +21,9 @@ dist/
 *.swp
 *.swo
 
+# n8n workflows (contain API secrets)
+workflows/
+
 # OS specific files
 .DS_Store
 Thumbs.db
