@@ -33,6 +33,12 @@
         text-align: right;
         margin-bottom: 1rem;
       }
+      .last-updated {
+        text-align: center;
+        font-size: 0.85rem;
+        opacity: 0.7;
+        margin-bottom: 1.5rem;
+      }
     </style>
   </head>
   <body>
@@ -64,48 +70,217 @@
         ro: {
           title: 'Termeni & Condiții și Politica GDPR',
           content: `
-          <h2>1. Scopul aplicației</h2>
-          <p>Aplicația „Portret Medieval” vă permite să încărcați o fotografie și să primiți un portret generat cu ajutorul inteligenței artificiale. Serviciul este furnizat de Turist în Transilvania în scop de divertisment și promovare turistică.</p>
-          <h2>2. Date colectate</h2>
+          <p class="last-updated"><em>Ultima actualizare: 10 aprilie 2026</em></p>
+
+          <h2>1. Operator de date și informații de contact</h2>
+          <p>Serviciul „Portret Medieval" este operat de <strong>Turist în Transilvania</strong> (denumit în continuare „Operatorul", „noi", „al nostru").</p>
+          <ul>
+            <li><strong>Email:</strong> <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a></li>
+            <li><strong>Website:</strong> <a href="https://turistintransilvania.com" target="_blank">turistintransilvania.com</a></li>
+          </ul>
+
+          <h2>2. Scopul aplicației</h2>
+          <p>Aplicația „Portret Medieval" vă permite să încărcați o fotografie și să primiți un portret generat cu ajutorul inteligenței artificiale, în stil medieval transilvănean. Serviciul este disponibil prin intermediul:</p>
+          <ul>
+            <li><strong>Website-ului</strong> – <a href="https://portrait.turistintransilvania.com" target="_blank">portrait.turistintransilvania.com</a></li>
+            <li><strong>WhatsApp</strong> – prin numărul nostru dedicat de WhatsApp Business</li>
+          </ul>
+          <p>Serviciul este furnizat în scop de divertisment, promovare turistică și comercializare de servicii digitale.</p>
+
+          <h2>3. Servicii gratuite și cu plată</h2>
+          <h3>3.1 Generări gratuite</h3>
+          <p>Fiecare utilizator beneficiază de:</p>
+          <ul>
+            <li><strong>1 (una) generare gratuită</strong> prin intermediul website-ului</li>
+            <li><strong>1 (una) generare gratuită</strong> prin intermediul WhatsApp</li>
+          </ul>
+          <p>Identificarea utilizatorului se face pe baza adresei de email (pe website) și a numărului de telefon (pe WhatsApp).</p>
+
+          <h3>3.2 Generări suplimentare cu plată</h3>
+          <p>După epuizarea generărilor gratuite, utilizatorul poate achiziționa generări suplimentare de portrete medievale la prețul de <strong>5 RON per generare</strong> (TVA inclus, dacă este cazul).</p>
+          <p>Plata se efectuează prin intermediul procesorului de plăți <strong>Netopia Payments</strong>, prin card bancar. Prin efectuarea plății, utilizatorul acceptă și <a href="https://netopia-payments.com/termeni-si-conditii/" target="_blank">Termenii și Condițiile Netopia</a>.</p>
+
+          <h3>3.3 Servicii adiționale oferite contra cost</h3>
+          <p>Operatorul poate oferi utilizatorilor, printre altele, următoarele servicii suplimentare contra cost:</p>
+          <ul>
+            <li><strong>Generare video animată</strong> a portretului medieval creat</li>
+            <li><strong>Portrete în alte stiluri</strong> (renascentist, baroc, romantic etc.)</li>
+            <li><strong>Printare și livrare</strong> a portretului pe canvas, hârtie foto sau alte suporturi</li>
+            <li><strong>Alte servicii digitale</strong> pe care le putem dezvolta în viitor</li>
+          </ul>
+          <p>Prețurile și detaliile serviciilor suplimentare vor fi comunicate utilizatorului la momentul ofertei.</p>
+
+          <h2>4. Date colectate</h2>
+          <h3>4.1 Prin website</h3>
           <ul>
             <li>Nume și prenume</li>
             <li>Adresă de email</li>
-            <li>Fotografia încărcată și generată</li>
+            <li>Fotografia încărcată și portretul generat</li>
             <li>Parametrul locație (QR code)</li>
             <li>Metadate tehnice (timestamp, IP scurtat)</li>
           </ul>
-          <h2>3. Temeiul legal</h2>
-          <p>Prelucrarea datelor se bazează pe consimțământul explicit pe care îl acordați prin trimiterea formularului și bifarea căsuței de acord.</p>
-          <h2>4. Cum folosim datele</h2>
+          <h3>4.2 Prin WhatsApp</h3>
           <ul>
-            <li>Generăm portretul și îl afișăm în aplicație.</li>
-            <li>Trimitem portretul pe email, la adresa furnizată.</li>
-            <li>Păstrăm imaginile pe AWS S3 în folderele <em>uploads/originals</em> și <em>uploads/ai-generated</em>.</li>
-            <li>Înregistrăm intrarea (fără fotografie) într-un Google Sheet pentru statistici.</li>
+            <li>Număr de telefon</li>
+            <li>Numele profilului WhatsApp</li>
+            <li>Fotografia trimisă și portretul generat</li>
+            <li>Mesajele schimbate în cadrul conversației cu botul automat</li>
+            <li>ID-ul media WhatsApp</li>
           </ul>
-          <h2>5. Stocare și ștergere</h2>
-          <p>Imaginile sunt păstrate maximum 30 de zile, după care sunt șterse automat. Înregistrările statistice pot fi păstrate pe termen nelimitat.</p>
-          <h2>6. Terți implicați</h2>
+          <h3>4.3 La efectuarea plăților</h3>
           <ul>
-            <li><strong>AWS S3</strong> – stocare imagini</li>
-            <li><strong>Replicate</strong> – generare AI</li>
-            <li><strong>n8n</strong> – orchestrare workflow</li>
-            <li><strong>Google</strong> – e-mail și Sheets</li>
+            <li>Date necesare procesării plății (transmise direct către Netopia, fără a fi stocate de noi)</li>
+            <li>Confirmarea statusului plății (reușit/eșuat)</li>
           </ul>
-          <h2>7. Drepturile dumneavoastră</h2>
-          <p>Conform GDPR, aveți dreptul la acces, rectificare, ștergere, restricționare și portabilitate. Ne puteți contacta la <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a>.</p>
-          <h2>8. Limitarea răspunderii</h2>
-          <p>Serviciul este oferit „ca atare”. Nu garantăm acuratețea absolută a portretelor generate și nu vom fi răspunzători pentru folosirea lor în alte scopuri.</p>
-          <h2>9. Modificări</h2>
-          <p>Putem actualiza acești termeni oricând. Versiunea curentă va fi întotdeauna disponibilă la acest URL.</p>
+
+          <h2>5. Temeiul legal al prelucrării</h2>
+          <p>Prelucrarea datelor dumneavoastră personale se realizează pe baza următoarelor temeiuri legale (Art. 6 GDPR):</p>
+          <ul>
+            <li><strong>Consimțământ explicit (Art. 6(1)(a))</strong> – pentru prestarea serviciului de generare a portretului, acordat prin trimiterea fotografiei și acceptarea prezentelor termeni și condiții</li>
+            <li><strong>Executarea unui contract (Art. 6(1)(b))</strong> – pentru furnizarea serviciilor cu plată (generări suplimentare, generare video etc.)</li>
+            <li><strong>Interes legitim (Art. 6(1)(f))</strong> – pentru comunicări referitoare la servicii similare celor contractate, sub rezerva dreptului dumneavoastră de opoziție</li>
+            <li><strong>Consimțământ separat pentru comunicări comerciale (Art. 6(1)(a))</strong> – pentru trimiterea de oferte, promoții și informații despre servicii noi sau complementare</li>
+          </ul>
+
+          <h2>6. Cum folosim datele</h2>
+          <ul>
+            <li>Generăm portretul medieval și îl afișăm/trimitem utilizatorului</li>
+            <li>Trimitem portretul pe email (website) sau pe WhatsApp, după caz</li>
+            <li>Păstrăm imaginile pe AWS S3 în folderele <em>original-uploads/</em> și <em>AI-generated/</em></li>
+            <li>Înregistrăm intrarea (fără fotografie) într-un Google Sheet pentru statistici interne</li>
+            <li>Procesăm plățile prin Netopia pentru serviciile cu plată</li>
+            <li>Vă contactăm prin email sau WhatsApp cu informații despre servicii, oferte comerciale și promoții, dacă v-ați dat consimțământul sau dacă aveți o relație comercială existentă cu noi</li>
+            <li>Analizăm utilizarea serviciului pentru îmbunătățirea acestuia</li>
+          </ul>
+
+          <h2>7. Comunicări comerciale și marketing</h2>
+          <h3>7.1 Tipuri de comunicări</h3>
+          <p>Cu consimțământul dumneavoastră sau în baza relației comerciale existente, vă putem contacta prin <strong>email</strong> și/sau <strong>WhatsApp</strong> pentru:</p>
+          <ul>
+            <li>Oferte de generări suplimentare de portrete</li>
+            <li>Servicii noi (generare video a portretului, alte stiluri artistice)</li>
+            <li>Promoții și reduceri la serviciile noastre</li>
+            <li>Informații despre evenimente și activități turistice în Transilvania</li>
+            <li>Servicii conexe oferite de Turist în Transilvania</li>
+          </ul>
+
+          <h3>7.2 Dreptul de dezabonare</h3>
+          <p>Puteți retrage oricând consimțământul pentru comunicări comerciale prin:</p>
+          <ul>
+            <li>Trimiterea unui email la <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a> cu subiectul „Dezabonare"</li>
+            <li>Răspunsul „STOP" la orice mesaj WhatsApp primit de la noi</li>
+            <li>Click pe link-ul de dezabonare din orice email comercial</li>
+          </ul>
+          <p>Retragerea consimțământului pentru comunicări comerciale <strong>nu afectează</strong> legalitatea prelucrării efectuate anterior retragerii și nu afectează dreptul dumneavoastră de a utiliza serviciul.</p>
+
+          <h2>8. Stocare și ștergere</h2>
+          <ul>
+            <li>Imaginile (originale și generate) sunt păstrate maximum <strong>30 de zile</strong>, după care sunt șterse automat din AWS S3</li>
+            <li>Datele din DynamoDB (acceptare termeni, status generare) sunt păstrate pe durata existenței contului/relației comerciale</li>
+            <li>Înregistrările statistice din Google Sheets (fără fotografii) pot fi păstrate pe termen nelimitat</li>
+            <li>Datele de contact (email, număr telefon) sunt păstrate atât timp cât este activ consimțământul pentru comunicări sau cât durează relația comercială</li>
+          </ul>
+
+          <h2>9. Terți implicați (procesatori de date)</h2>
+          <p>Pentru furnizarea serviciului, datele dumneavoastră pot fi prelucrate de următorii terți:</p>
+          <ul>
+            <li><strong>AWS (Amazon Web Services)</strong> – stocare imagini (S3), funcții serverless (Lambda), bază de date (DynamoDB) – regiune: EU (Frankfurt)</li>
+            <li><strong>Replicate</strong> – procesare și generare imagini AI</li>
+            <li><strong>n8n</strong> – orchestrare automată a workflow-ului</li>
+            <li><strong>Google</strong> – trimitere email (Gmail), foi de calcul (Sheets), stocare fișiere (Drive)</li>
+            <li><strong>Meta / WhatsApp Business</strong> – comunicare prin WhatsApp, trimiterea și primirea mesajelor și imaginilor</li>
+            <li><strong>Netopia Payments</strong> – procesare plăți online cu card bancar</li>
+            <li><strong>Vercel</strong> – hosting website</li>
+          </ul>
+          <p>Toți procesatorii menționați oferă garanții adecvate de protecție a datelor în conformitate cu GDPR.</p>
+
+          <h2>10. Transferuri internaționale de date</h2>
+          <p>Unii dintre procesatorii menționați la secțiunea 9 pot stoca sau prelucra date în afara Spațiului Economic European (SEE). În aceste cazuri, transferul este protejat prin clauze contractuale standard aprobate de Comisia Europeană sau prin alte mecanisme prevăzute de GDPR.</p>
+
+          <h2>11. Drepturile dumneavoastră (conform GDPR)</h2>
+          <p>Aveți următoarele drepturi în legătură cu datele dumneavoastră personale:</p>
+          <ul>
+            <li><strong>Dreptul de acces</strong> – puteți solicita informații despre datele pe care le deținem</li>
+            <li><strong>Dreptul la rectificare</strong> – puteți corecta datele inexacte</li>
+            <li><strong>Dreptul la ștergere („dreptul de a fi uitat")</strong> – puteți solicita ștergerea datelor</li>
+            <li><strong>Dreptul la restricționarea prelucrării</strong></li>
+            <li><strong>Dreptul la portabilitatea datelor</strong></li>
+            <li><strong>Dreptul de opoziție</strong> – puteți refuza prelucrarea datelor în scop de marketing direct</li>
+            <li><strong>Dreptul de retragere a consimțământului</strong> – în orice moment, fără a afecta legalitatea prelucrării anterioare</li>
+          </ul>
+          <p>Pentru exercitarea acestor drepturi, ne puteți contacta la <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a>. Vom răspunde în maximum 30 de zile.</p>
+          <p>De asemenea, aveți dreptul de a depune o plângere la <strong>Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP)</strong> – <a href="https://www.dataprotection.ro" target="_blank">www.dataprotection.ro</a>.</p>
+
+          <h2>12. Limitarea răspunderii</h2>
+          <ul>
+            <li>Serviciul este oferit „ca atare" (as is). Nu garantăm acuratețea absolută a portretelor generate și nu vom fi răspunzători pentru folosirea lor în alte scopuri.</li>
+            <li>Portretele generate sunt create de inteligență artificială și pot conține imperfecțiuni.</li>
+            <li>Nu suntem responsabili pentru indisponibilitatea temporară a serviciului din cauze tehnice.</li>
+            <li>Plățile procesate nu sunt rambursabile după livrarea portretului generat, cu excepția cazurilor de eroare tehnică dovedită.</li>
+          </ul>
+
+          <h2>13. Proprietate intelectuală</h2>
+          <p>Portretul generat vă este licențiat pentru uz personal. Turist în Transilvania își rezervă dreptul de a utiliza portretele generate (anonimizate) în materiale promoționale, cu excepția cazului în care solicitați explicit altfel.</p>
+
+          <h2>14. Modificări ale termenilor</h2>
+          <p>Putem actualiza acești termeni oricând. Versiunea curentă va fi întotdeauna disponibilă la acest URL. În cazul unor modificări substanțiale, vom notifica utilizatorii prin email sau WhatsApp, acolo unde este posibil.</p>
+
+          <h2>15. Consimțământ</h2>
+          <p>Prin utilizarea serviciului „Portret Medieval" (pe website sau WhatsApp), confirmați că:</p>
+          <ul>
+            <li>Ați citit și ați înțeles acești Termeni și Condiții</li>
+            <li>Sunteți de acord cu prelucrarea datelor dumneavoastră conform celor descrise mai sus</li>
+            <li>Aveți cel puțin 16 ani sau aveți acordul părintelui/tutorelui legal</li>
+            <li>Fotografia încărcată vă aparține și aveți dreptul de a o utiliza</li>
+          </ul>
+          <p><em>Consimțământul pentru comunicări comerciale (secțiunea 7) este separat și opțional, și poate fi acordat sau retras independent de utilizarea serviciului.</em></p>
           `,
         },
         en: {
           title: 'Terms & Conditions and GDPR Policy',
           content: `
-          <h2>1. Purpose of the app</h2>
-          <p>The “Medieval Portrait” app lets you upload a photo and receive an AI-generated medieval portrait. The service is provided by Turist în Transilvania for entertainment and tourism promotion.</p>
-          <h2>2. Data we collect</h2>
+          <p class="last-updated"><em>Last updated: April 10, 2026</em></p>
+
+          <h2>1. Data Controller and Contact Information</h2>
+          <p>The "Medieval Portrait" service is operated by <strong>Turist în Transilvania</strong> (hereinafter "the Controller", "we", "our").</p>
+          <ul>
+            <li><strong>Email:</strong> <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a></li>
+            <li><strong>Website:</strong> <a href="https://turistintransilvania.com" target="_blank">turistintransilvania.com</a></li>
+          </ul>
+
+          <h2>2. Purpose of the Application</h2>
+          <p>The "Medieval Portrait" app allows you to upload a photo and receive an AI-generated medieval portrait in a Transylvanian style. The service is available through:</p>
+          <ul>
+            <li><strong>Website</strong> – <a href="https://portrait.turistintransilvania.com" target="_blank">portrait.turistintransilvania.com</a></li>
+            <li><strong>WhatsApp</strong> – via our dedicated WhatsApp Business number</li>
+          </ul>
+          <p>The service is provided for entertainment, tourism promotion, and commercialization of digital services.</p>
+
+          <h2>3. Free and Paid Services</h2>
+          <h3>3.1 Free Generations</h3>
+          <p>Each user receives:</p>
+          <ul>
+            <li><strong>1 (one) free generation</strong> via the website</li>
+            <li><strong>1 (one) free generation</strong> via WhatsApp</li>
+          </ul>
+          <p>User identification is based on email address (website) and phone number (WhatsApp).</p>
+
+          <h3>3.2 Paid Additional Generations</h3>
+          <p>After using the free generations, users may purchase additional medieval portrait generations at a price of <strong>5 RON per generation</strong> (VAT included, if applicable).</p>
+          <p>Payment is processed through <strong>Netopia Payments</strong> via bank card. By making a payment, the user also accepts <a href="https://netopia-payments.com/termeni-si-conditii/" target="_blank">Netopia's Terms and Conditions</a>.</p>
+
+          <h3>3.3 Additional Paid Services</h3>
+          <p>The Controller may offer users the following additional paid services, among others:</p>
+          <ul>
+            <li><strong>Animated video generation</strong> of the created medieval portrait</li>
+            <li><strong>Portraits in other styles</strong> (Renaissance, Baroque, Romantic, etc.)</li>
+            <li><strong>Print and delivery</strong> of the portrait on canvas, photo paper, or other media</li>
+            <li><strong>Other digital services</strong> that we may develop in the future</li>
+          </ul>
+          <p>Pricing and details of additional services will be communicated to the user at the time of the offer.</p>
+
+          <h2>4. Data We Collect</h2>
+          <h3>4.1 Via Website</h3>
           <ul>
             <li>Your name</li>
             <li>Email address</li>
@@ -113,56 +288,147 @@
             <li>Location parameter from QR code</li>
             <li>Technical metadata (timestamp, shortened IP)</li>
           </ul>
-          <h2>3. Legal basis</h2>
-          <p>Processing is based on the explicit consent you give by submitting the form and ticking the agreement box.</p>
-          <h2>4. How we use the data</h2>
+          <h3>4.2 Via WhatsApp</h3>
           <ul>
-            <li>Generate and display your portrait in the app.</li>
-            <li>Email the portrait to the provided address.</li>
-            <li>Store images on AWS S3 in <em>uploads/originals</em> and <em>uploads/ai-generated</em>.</li>
-            <li>Log the entry (without the photo) to a Google Sheet for statistics.</li>
+            <li>Phone number</li>
+            <li>WhatsApp profile name</li>
+            <li>The photo sent and the generated portrait</li>
+            <li>Messages exchanged within the automated bot conversation</li>
+            <li>WhatsApp media ID</li>
           </ul>
-          <h2>5. Storage & deletion</h2>
-          <p>Images are stored for up to 30 days and then automatically deleted. Statistical logs may be kept indefinitely.</p>
-          <h2>6. Third-party processors</h2>
+          <h3>4.3 During Payments</h3>
           <ul>
-            <li><strong>AWS S3</strong> – image storage</li>
-            <li><strong>Replicate</strong> – AI generation</li>
-            <li><strong>n8n</strong> – workflow orchestration</li>
-            <li><strong>Google</strong> – email & Sheets</li>
+            <li>Data necessary for payment processing (transmitted directly to Netopia, not stored by us)</li>
+            <li>Payment status confirmation (success/failure)</li>
           </ul>
-          <h2>7. Your rights</h2>
-          <p>Under GDPR you have the right to access, rectify, delete, restrict or port your data. Contact us at <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a>.</p>
-          <h2>8. Liability</h2>
-          <p>The service is provided “as is”. We do not guarantee absolute accuracy of generated portraits and are not liable for their usage elsewhere.</p>
-          <h2>9. Changes</h2>
-          <p>We may update these terms at any time. The current version will always be available at this URL.</p>
+
+          <h2>5. Legal Basis for Processing</h2>
+          <p>Your personal data is processed based on the following legal grounds (Art. 6 GDPR):</p>
+          <ul>
+            <li><strong>Explicit consent (Art. 6(1)(a))</strong> – for the portrait generation service, given by submitting a photo and accepting these terms and conditions</li>
+            <li><strong>Performance of a contract (Art. 6(1)(b))</strong> – for providing paid services (additional generations, video generation, etc.)</li>
+            <li><strong>Legitimate interest (Art. 6(1)(f))</strong> – for communications regarding services similar to those contracted, subject to your right to object</li>
+            <li><strong>Separate consent for commercial communications (Art. 6(1)(a))</strong> – for sending offers, promotions, and information about new or complementary services</li>
+          </ul>
+
+          <h2>6. How We Use the Data</h2>
+          <ul>
+            <li>Generate the medieval portrait and display/send it to the user</li>
+            <li>Send the portrait via email (website) or WhatsApp, as applicable</li>
+            <li>Store images on AWS S3 in <em>original-uploads/</em> and <em>AI-generated/</em> folders</li>
+            <li>Log the entry (without photo) to a Google Sheet for internal statistics</li>
+            <li>Process payments through Netopia for paid services</li>
+            <li>Contact you via email or WhatsApp with service information, commercial offers, and promotions, if you have given consent or if you have an existing commercial relationship with us</li>
+            <li>Analyze service usage for improvement purposes</li>
+          </ul>
+
+          <h2>7. Commercial Communications and Marketing</h2>
+          <h3>7.1 Types of Communications</h3>
+          <p>With your consent or based on an existing commercial relationship, we may contact you via <strong>email</strong> and/or <strong>WhatsApp</strong> regarding:</p>
+          <ul>
+            <li>Offers for additional portrait generations</li>
+            <li>New services (portrait video generation, other artistic styles)</li>
+            <li>Promotions and discounts on our services</li>
+            <li>Information about tourist events and activities in Transylvania</li>
+            <li>Related services offered by Turist în Transilvania</li>
+          </ul>
+
+          <h3>7.2 Right to Unsubscribe</h3>
+          <p>You may withdraw your consent for commercial communications at any time by:</p>
+          <ul>
+            <li>Sending an email to <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a> with the subject "Unsubscribe"</li>
+            <li>Replying "STOP" to any WhatsApp message received from us</li>
+            <li>Clicking the unsubscribe link in any commercial email</li>
+          </ul>
+          <p>Withdrawing consent for commercial communications <strong>does not affect</strong> the lawfulness of processing carried out prior to withdrawal and does not affect your right to use the service.</p>
+
+          <h2>8. Storage and Deletion</h2>
+          <ul>
+            <li>Images (original and generated) are stored for a maximum of <strong>30 days</strong>, after which they are automatically deleted from AWS S3</li>
+            <li>DynamoDB data (terms acceptance, generation status) is kept for the duration of the account/commercial relationship</li>
+            <li>Statistical records in Google Sheets (without photos) may be kept indefinitely</li>
+            <li>Contact data (email, phone number) is retained as long as the marketing consent is active or the commercial relationship lasts</li>
+          </ul>
+
+          <h2>9. Third-Party Processors</h2>
+          <p>To provide the service, your data may be processed by the following third parties:</p>
+          <ul>
+            <li><strong>AWS (Amazon Web Services)</strong> – image storage (S3), serverless functions (Lambda), database (DynamoDB) – region: EU (Frankfurt)</li>
+            <li><strong>Replicate</strong> – AI image processing and generation</li>
+            <li><strong>n8n</strong> – automated workflow orchestration</li>
+            <li><strong>Google</strong> – email (Gmail), spreadsheets (Sheets), file storage (Drive)</li>
+            <li><strong>Meta / WhatsApp Business</strong> – WhatsApp communication, sending and receiving messages and images</li>
+            <li><strong>Netopia Payments</strong> – online credit card payment processing</li>
+            <li><strong>Vercel</strong> – website hosting</li>
+          </ul>
+          <p>All mentioned processors provide adequate data protection guarantees in compliance with GDPR.</p>
+
+          <h2>10. International Data Transfers</h2>
+          <p>Some processors mentioned in section 9 may store or process data outside the European Economic Area (EEA). In such cases, the transfer is protected by standard contractual clauses approved by the European Commission or other GDPR-compliant mechanisms.</p>
+
+          <h2>11. Your Rights (under GDPR)</h2>
+          <p>You have the following rights regarding your personal data:</p>
+          <ul>
+            <li><strong>Right of access</strong> – you may request information about the data we hold</li>
+            <li><strong>Right to rectification</strong> – you may correct inaccurate data</li>
+            <li><strong>Right to erasure ("right to be forgotten")</strong> – you may request data deletion</li>
+            <li><strong>Right to restriction of processing</strong></li>
+            <li><strong>Right to data portability</strong></li>
+            <li><strong>Right to object</strong> – you may refuse processing for direct marketing purposes</li>
+            <li><strong>Right to withdraw consent</strong> – at any time, without affecting the lawfulness of prior processing</li>
+          </ul>
+          <p>To exercise these rights, contact us at <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a>. We will respond within 30 days.</p>
+          <p>You also have the right to lodge a complaint with the <strong>National Supervisory Authority for Personal Data Processing (ANSPDCP)</strong> – <a href="https://www.dataprotection.ro" target="_blank">www.dataprotection.ro</a>.</p>
+
+          <h2>12. Limitation of Liability</h2>
+          <ul>
+            <li>The service is provided "as is". We do not guarantee absolute accuracy of generated portraits and are not liable for their use for other purposes.</li>
+            <li>Generated portraits are created by artificial intelligence and may contain imperfections.</li>
+            <li>We are not responsible for temporary service unavailability due to technical causes.</li>
+            <li>Processed payments are non-refundable after delivery of the generated portrait, except in cases of proven technical error.</li>
+          </ul>
+
+          <h2>13. Intellectual Property</h2>
+          <p>The generated portrait is licensed to you for personal use. Turist în Transilvania reserves the right to use generated portraits (anonymized) in promotional materials, unless you explicitly request otherwise.</p>
+
+          <h2>14. Changes to Terms</h2>
+          <p>We may update these terms at any time. The current version will always be available at this URL. In case of substantial changes, we will notify users via email or WhatsApp, where possible.</p>
+
+          <h2>15. Consent</h2>
+          <p>By using the "Medieval Portrait" service (on the website or WhatsApp), you confirm that:</p>
+          <ul>
+            <li>You have read and understood these Terms and Conditions</li>
+            <li>You agree to the processing of your data as described above</li>
+            <li>You are at least 16 years old or have parental/guardian consent</li>
+            <li>The uploaded photo belongs to you and you have the right to use it</li>
+          </ul>
+          <p><em>Consent for commercial communications (section 7) is separate and optional, and may be granted or withdrawn independently of service use.</em></p>
           `,
         },
         // Quick machine-translated summaries for other languages
         de: {
-          title: 'Allgemeine Geschäftsbedingungen & GDPR-Richtlinie',
-          content: '<p>Für die deutsche Version konsultieren Sie bitte die englische oder rumänische Fassung. Ihre Daten werden gemäß DSGVO verarbeitet.</p>',
+          title: 'Allgemeine Geschäftsbedingungen & DSGVO-Richtlinie',
+          content: '<p>Für die vollständige deutsche Version konsultieren Sie bitte die englische oder rumänische Fassung. Ihre Daten werden gemäß DSGVO verarbeitet. Kontakt: <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a></p>',
         },
         hu: {
           title: 'Felhasználási feltételek és GDPR',
-          content: '<p>A teljes magyar változat hamarosan. Az adatait a GDPR előírásai szerint kezeljük.</p>',
+          content: '<p>A teljes magyar változatért kérjük, tekintse meg az angol vagy román verziót. Adatait a GDPR előírásai szerint kezeljük. Kapcsolat: <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a></p>',
         },
         es: {
           title: 'Términos y Condiciones y Política GDPR',
-          content: '<p>La versión completa en español estará disponible pronto. Sus datos se procesan de acuerdo con el GDPR.</p>',
+          content: '<p>Para la versión completa en español, consulte la versión en inglés o rumano. Sus datos se procesan de acuerdo con el GDPR. Contacto: <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a></p>',
         },
         fr: {
-          title: 'Conditions générales et politique GDPR',
-          content: '<p>La version française complète sera bientôt disponible. Vos données sont traitées conformément au RGPD.</p>',
+          title: 'Conditions générales et politique RGPD',
+          content: '<p>Pour la version française complète, veuillez consulter la version anglaise ou roumaine. Vos données sont traitées conformément au RGPD. Contact: <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a></p>',
         },
         it: {
           title: 'Termini e Condizioni e Informativa GDPR',
-          content: '<p>La versione italiana completa sarà disponibile a breve. I tuoi dati sono trattati in conformità al GDPR.</p>',
+          content: '<p>Per la versione italiana completa, consultare la versione inglese o rumena. I tuoi dati sono trattati in conformità al GDPR. Contatto: <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a></p>',
         },
         pl: {
           title: 'Regulamin i Polityka RODO',
-          content: '<p>Pełna polska wersja będzie dostępna wkrótce. Twoje dane są przetwarzane zgodnie z RODO.</p>',
+          content: '<p>Pełna polska wersja — proszę zapoznać się z wersją angielską lub rumuńską. Twoje dane są przetwarzane zgodnie z RODO. Kontakt: <a href="mailto:contact@turist-transilvania.com">contact@turist-transilvania.com</a></p>',
         },
       };
 
