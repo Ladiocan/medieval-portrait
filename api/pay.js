@@ -32,7 +32,8 @@ export default async function handler(req, res) {
   
   try {
     const { pubKeyPath, privKeyPath } = ensureKeyFiles();
-    const Netopia = require('@bogdan-nita/netopia-card');
+    const NetopiaPkg = require('@bogdan-nita/netopia-card');
+    const Netopia = typeof NetopiaPkg === 'function' ? NetopiaPkg : (NetopiaPkg.Netopia || NetopiaPkg.default || NetopiaPkg);
 
     const netopia = new Netopia({
       signature: process.env.NETOPIA_SIGNATURE || '',
