@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 // Helper for Netopia. Creates temporary key files since the Netopia package expects file paths.
 function ensureKeyFiles() {

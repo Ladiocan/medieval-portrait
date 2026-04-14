@@ -1,6 +1,6 @@
 {
   "name": "medieval-portrait-form",
   "version": 2,
-  "buildCommand": "find ./public -type f -name \"*.html\" -exec sed -i.bak 's|%WEBHOOK_URL%|'\"$WEBHOOK_URL\"'|g; s|%WHATSAPP_NUMBER%|'\"$WHATSAPP_NUMBER\"'|g' {} \\; && find ./public -name '*.bak' -delete",
+  "buildCommand": "find ./public -type f -name '*.html' -exec sed -i \"s|%WEBHOOK_URL%|$WEBHOOK_URL|g; s|%WHATSAPP_NUMBER%|$WHATSAPP_NUMBER|g\" {} +",
   "outputDirectory": "public"
 }
