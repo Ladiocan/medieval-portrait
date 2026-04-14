@@ -1,3 +1,25 @@
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+// Helper for Netopia. Creates temporary key files since the Netopia package expects file paths.
+function ensureKeyFiles() {
+  const tempDir = os.tmpdir();
+  const pubKeyPath = path.join(tempDir, 'netopia_public.cer');
+  const privKeyPath = path.join(tempDir, 'netopia_private.key');
+
+  if (!fs.existsSync(pubKeyPath)) {
+    fs.writeFileSync(pubKeyPath, process.env.NETOPIA_PUBLIC_KEY || '');
+  }
+  if (!fs.existsSync(privKeyPath)) {
+    fs.writeFileSync(privKeyPath, process.env.NETOPIA_PRIVATE_KEY || '');
+  }
+  
+  return { pubKeyPath, privKeyPath };
+}
+
 export default async function handler(req, res) {
   const { phone, name } = req.query;
   
@@ -5,85 +27,80 @@ export default async function handler(req, res) {
     return res.status(400).send('Lipsește numărul de telefon (phone) din URL.');
   }
 
-  const apiKey = process.env.NETOPIA_API_KEY;
-  const posSignature = process.env.NETOPIA_SIGNATURE;
-  const baseUrl = process.env.WEBHOOK_URL || 'https://portrait.turistintransilvania.com';
-  const isSandbox = process.env.NETOPIA_SANDBOX !== 'false';
+  // Set as sandbox if not explicitly 'false' (safer for testing initially)
+  const isSandbox = process.env.NETOPIA_SANDBOX !== 'false'; 
   
-  const endpoint = isSandbox 
-    ? 'https://secure.sandbox.netopia-payments.com/payment/card/start'
-    : 'https://secure.mobilpay.ro/pay/payment/card/start';
-
   try {
+    const { pubKeyPath, privKeyPath } = ensureKeyFiles();
+    const Netopia = require('@bogdan-nita/netopia-card');
+
+    const netopia = new Netopia({
+      signature: process.env.NETOPIA_SIGNATURE || '',
+      publicKey: pubKeyPath,
+      privateKey: privKeyPath,
+      sandbox: isSandbox
+    });
+
     const paymentData = {
-      config: {
-        emailTemplate: 'default',
-        notifyUrl: `${baseUrl}/api/webhook/netopia`,
-        redirectUrl: `${baseUrl}/payment-success.html`,
-        language: 'ro'
-      },
-      payment: {
-        options: {
-          installments: 0,
-          bonus: 0
-        },
-        instrument: {
-          type: 'card'
-        },
-        data: {
-          BROWSER_USER_AGENT: req.headers['user-agent'] || 'Unknown',
-          IP_ADDRESS: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1'
-        }
-      },
-      order: {
-        posSignature: posSignature,
-        dateTime: new Date().toISOString(),
-        description: 'Portret Medieval AI',
-        orderID: `${phone}-${Date.now()}`,
-        amount: 5.0,
-        currency: 'RON',
+      orderId: phone, 
+      amount: '5',
+      currency: 'RON',
+      details: 'Portret Medieval',
+      confirmUrl: 'https://portrait.turistintransilvania.com/api/webhook/netopia',
+      returnUrl: 'https://portrait.turistintransilvania.com/payment-success.html',
+      client: {
         billing: {
-          email: 'contact@turistintransilvania.com',
-          phone: phone,
           firstName: name || 'Client',
-          lastName: 'Medieval',
-          city: 'Bucuresti',
-          country: 642, // Romania country code
-          state: 'Bucuresti',
-          postalCode: '010001',
-          details: `Plata portret pentru ${phone}`
+          lastName: 'Turist',
+          email: 'contact@turistintransilvania.com',
+          phone: phone
         }
       }
     };
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(paymentData)
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error('Netopia API Error:', result);
-      throw new Error(result.message || result.error_description || 'Eroare la comunicarea cu Netopia API v2');
-    }
-
-    // Modern REST API returns a paymentURL to redirect to
-    const paymentUrl = result.payment?.paymentURL;
-
-    if (!paymentUrl) {
-      throw new Error('Nu am primit link-ul de redirect de la Netopia.');
-    }
-
-    // Redirect user to Netopia checkout page
-    res.redirect(302, paymentUrl);
+    
+    // Netopia package builder
+    const request = await netopia.buildRequest(paymentData);
+    
+    // If request.url is missing, fallback to known netopia URLs
+    const paymentUrl = request.url || (
+      isSandbox 
+        ? 'https://sandboxsecure.mobilpay.ro' 
+        : 'https://secure.mobilpay.ro'
+    );
+     
+    // Render an auto-submitting form
+    const formHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Redirecționare Netopia...</title>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #111; color: #fff; }
+          .loader { border: 4px solid #333; border-top: 4px solid #d4af37; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+          .text-center { text-align: center; }
+        </style>
+      </head>
+      <body onload="document.forms[0].submit()">
+        <div class="text-center">
+          <div class="loader"></div>
+          <h2>Securizăm conexiunea cu Netopia...</h2>
+          <p>Vei fi redirecționat automat pentru plata portretului (5 RON).</p>
+        </div>
+        <form action="${paymentUrl}" method="POST" style="display:none;">
+          <input type="hidden" name="env_key" value="${request.envKey}" />
+          <input type="hidden" name="data" value="${request.data}" />
+        </form>
+      </body>
+      </html>
+    `;
+    
+    res.setHeader('Content-Type', 'text/html');
+    res.status(200).send(formHtml);
 
   } catch (error) {
-    console.error('Netopia request error:', error);
-    res.status(500).send(`Eroare la generarea plății: ${error.message}`);
+    console.error('Netopia request build error:', error);
+    res.status(500).send('Eroare internă la generarea plății: ' + error.message + '. Verificați cheile de criptare.');
   }
 }

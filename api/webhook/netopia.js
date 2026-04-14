@@ -1,37 +1,56 @@
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+
+function ensureKeyFiles() {
+  const tempDir = os.tmpdir();
+  const pubKeyPath = path.join(tempDir, 'netopia_public.cer');
+  const privKeyPath = path.join(tempDir, 'netopia_private.key');
+
+  if (!fs.existsSync(pubKeyPath)) {
+    fs.writeFileSync(pubKeyPath, process.env.NETOPIA_PUBLIC_KEY || '');
+  }
+  if (!fs.existsSync(privKeyPath)) {
+    fs.writeFileSync(privKeyPath, process.env.NETOPIA_PRIVATE_KEY || '');
+  }
+  
+  return { pubKeyPath, privKeyPath };
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
   }
 
+  const isSandbox = process.env.NETOPIA_SANDBOX !== 'false'; 
+
   try {
+    const { pubKeyPath, privKeyPath } = ensureKeyFiles();
+    const Netopia = require('@bogdan-nita/netopia-card');
+
+    const netopia = new Netopia({
+      signature: process.env.NETOPIA_SIGNATURE || '',
+      publicKey: pubKeyPath,
+      privateKey: privKeyPath,
+      sandbox: isSandbox
+    });
+
     const { env_key, data } = req.body;
     
     if (!env_key || !data) {
-      // Netopia v2 might send a JSON body directly if it's the newer notification style
-      // For now, we handle the standard env_key/data which remains common
-      return res.status(400).send('Missing payload (env_key/data)');
+      return res.status(400).send('Missing payload');
     }
 
-    const Netopia = require('netopia-card');
+    // Decrypt and validate Netopia response
+    const response = await netopia.validateResponse(env_key, data);
     
-    // In v2, we often use the API Key for verification if it's a REST transaction
-    const netopia = new Netopia({
-      apiKey: process.env.NETOPIA_API_KEY,
-      signature: process.env.NETOPIA_SIGNATURE,
-      sandbox: process.env.NETOPIA_SANDBOX !== 'false'
-    });
-
-    // Validate and decrypt
-    const response = await netopia.validatePayment(env_key, data);
+    // Netopia returns orderId (which is the phone number in our case) and action
+    const { orderId, action, errorMessage } = response;
     
-    const { orderId, status, action } = response;
-    
-    // status 3 = paid, status 5 = confirmed (depending on Netopia version)
-    // Most common is checking for 'confirmed' or 'paid'
-    if (action === 'confirmed' || action === 'paid' || status === 'confirmed') {
+    // Check if the payment got confirmed
+    if (action === 'confirmed') {
+      // 1. Alert N8N Webhook with the payment confirmation!
+      // Provide the N8N_WEBHOOK_URL in environment vars
       const n8nWebhook = process.env.N8N_WEBHOOK_URL_PAYMENT;
       
       if (n8nWebhook) {
@@ -39,23 +58,31 @@ export default async function handler(req, res) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            phone: orderId.split('-')[0], // Extract phone from orderID (phone-timestamp)
-            orderId: orderId,
+            phone: orderId, 
             status: 'paid',
-            source: 'netopia_v2_ipn'
+            action: action,
+            source: 'netopia_ipn'
           })
         });
+      } else {
+        console.warn('N8N_WEBHOOK_URL_PAYMENT nu este setat. N8N nu a fost notificat.');
       }
     }
 
-    // Modern API still often expects this XML ACK
-    const ackXml = `<?xml version="1.0" encoding="utf-8"?><crc>SUCCESS</crc>`;
+    // Netopia requires an XML response to acknowledge their IPN!
+    // Building a success XML:
+    const ackXml = `<?xml version="1.0" encoding="utf-8"?>
+<crc>SUCCESS</crc>`;
+    
     res.setHeader('Content-Type', 'application/xml');
     return res.status(200).send(ackXml);
 
   } catch (error) {
     console.error('IPN Webhook error:', error);
-    const errorXml = `<?xml version="1.0" encoding="utf-8"?><crc error_type="1" error_code="1">${error.message}</crc>`;
+    // If decryption fails or signature is wrong
+    const errorXml = `<?xml version="1.0" encoding="utf-8"?>
+<crc error_type="1" error_code="1">${error.message}</crc>`;
+    
     res.setHeader('Content-Type', 'application/xml');
     return res.status(200).send(errorXml);
   }
