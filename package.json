@@ -1,0 +1,8 @@
+{
+  "name": "medieval-portrait-form",
+  "version": "1.0.0",
+  "description": "Medieval Portrait Web and Netopia Endpoints",
+  "dependencies": {
+    "netopia-card": "^1.1.3"
+  }
+}
