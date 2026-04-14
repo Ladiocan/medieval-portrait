@@ -39,6 +39,8 @@ export default async function handler(req, res) {
       signature: process.env.NETOPIA_SIGNATURE || '',
       publicKey: pubKeyPath,
       privateKey: privKeyPath,
+      confirmUrl: 'https://portrait.turistintransilvania.com/api/webhook/netopia',
+      returnUrl: 'https://portrait.turistintransilvania.com/payment-success.html',
       sandbox: isSandbox
     });
 
