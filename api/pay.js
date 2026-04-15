@@ -4,18 +4,29 @@ import os from 'os';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
+// Helper to parse keys correctly, handling escaped newlines
+function parseKey(key) {
+  if (!key) return '';
+  // Replace literal '\n' characters with actual newlines if present
+  return key.trim().replace(/\\n/g, '\n');
+}
+
 // Helper for Netopia. Creates temporary key files since the Netopia package expects file paths.
 function ensureKeyFiles() {
   const tempDir = os.tmpdir();
   const pubKeyPath = path.join(tempDir, 'netopia_public.cer');
   const privKeyPath = path.join(tempDir, 'netopia_private.key');
 
-  if (!fs.existsSync(pubKeyPath)) {
-    fs.writeFileSync(pubKeyPath, process.env.NETOPIA_PUBLIC_KEY || '');
+  const pubKey = parseKey(process.env.NETOPIA_PUBLIC_KEY);
+  const privKey = parseKey(process.env.NETOPIA_PRIVATE_KEY);
+
+  if (!pubKey || !privKey) {
+    throw new Error('CONFIG_MISSING: Cheile de criptare Lipsesc (Public/Private Key)');
   }
-  if (!fs.existsSync(privKeyPath)) {
-    fs.writeFileSync(privKeyPath, process.env.NETOPIA_PRIVATE_KEY || '');
-  }
+
+  // Always write to ensure they are fresh and correctly formatted
+  fs.writeFileSync(pubKeyPath, pubKey);
+  fs.writeFileSync(privKeyPath, privKey);
   
   return { pubKeyPath, privKeyPath };
 }
@@ -27,6 +38,11 @@ export default async function handler(req, res) {
     return res.status(400).send('Lipsește numărul de telefon (phone) din URL.');
   }
 
+  // Basic signature validation
+  if (!process.env.NETOPIA_SIGNATURE) {
+    return res.status(500).send('Eroare internă: NETOPIA_SIGNATURE lipsește din configurație.');
+  }
+
   // Set as sandbox if not explicitly 'false' (safer for testing initially)
   const isSandbox = process.env.NETOPIA_SANDBOX !== 'false'; 
   
@@ -36,7 +52,7 @@ export default async function handler(req, res) {
     const Netopia = typeof NetopiaPkg === 'function' ? NetopiaPkg : (NetopiaPkg.Netopia || NetopiaPkg.default || NetopiaPkg);
 
     const netopia = new Netopia({
-      signature: process.env.NETOPIA_SIGNATURE || '',
+      signature: process.env.NETOPIA_SIGNATURE,
       publicKey: pubKeyPath,
       privateKey: privKeyPath,
       confirmUrl: 'https://portrait.turistintransilvania.com/api/webhook/netopia',
@@ -44,8 +60,11 @@ export default async function handler(req, res) {
       sandbox: isSandbox
     });
 
+    // Make orderId unique to avoid "Order already exists" or duplicate process issues
+    const uniqueOrderId = `${phone.replace(/[^0-9]/g, '')}-${Date.now()}`;
+
     const paymentData = {
-      orderId: phone, 
+      orderId: uniqueOrderId, 
       amount: '5',
       currency: 'RON',
       details: 'Portret Medieval',

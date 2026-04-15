@@ -1,18 +1,31 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+// Helper to parse keys correctly, handling escaped newlines
+function parseKey(key) {
+  if (!key) return '';
+  // Replace literal '\n' characters with actual newlines if present
+  return key.trim().replace(/\\n/g, '\n');
+}
 
 function ensureKeyFiles() {
   const tempDir = os.tmpdir();
   const pubKeyPath = path.join(tempDir, 'netopia_public.cer');
   const privKeyPath = path.join(tempDir, 'netopia_private.key');
 
-  if (!fs.existsSync(pubKeyPath)) {
-    fs.writeFileSync(pubKeyPath, process.env.NETOPIA_PUBLIC_KEY || '');
+  const pubKey = parseKey(process.env.NETOPIA_PUBLIC_KEY);
+  const privKey = parseKey(process.env.NETOPIA_PRIVATE_KEY);
+
+  if (!pubKey || !privKey) {
+    throw new Error('CONFIG_MISSING: Cheile de criptare Lipsesc (Public/Private Key)');
   }
-  if (!fs.existsSync(privKeyPath)) {
-    fs.writeFileSync(privKeyPath, process.env.NETOPIA_PRIVATE_KEY || '');
-  }
+
+  // Always write to ensure they are fresh and correctly formatted
+  fs.writeFileSync(pubKeyPath, pubKey);
+  fs.writeFileSync(privKeyPath, privKey);
   
   return { pubKeyPath, privKeyPath };
 }
@@ -20,6 +33,12 @@ function ensureKeyFiles() {
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
+  }
+
+  // Basic signature validation
+  if (!process.env.NETOPIA_SIGNATURE) {
+    console.error('Webhook error: NETOPIA_SIGNATURE lipsește.');
+    return res.status(500).send('Config Error');
   }
 
   const isSandbox = process.env.NETOPIA_SANDBOX !== 'false'; 
@@ -30,7 +49,7 @@ export default async function handler(req, res) {
     const Netopia = typeof NetopiaPkg === 'function' ? NetopiaPkg : (NetopiaPkg.Netopia || NetopiaPkg.default || NetopiaPkg);
 
     const netopia = new Netopia({
-      signature: process.env.NETOPIA_SIGNATURE || '',
+      signature: process.env.NETOPIA_SIGNATURE,
       publicKey: pubKeyPath,
       privateKey: privKeyPath,
       sandbox: isSandbox
