@@ -4,11 +4,16 @@ import os from 'os';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-// Helper to parse keys correctly, handling escaped newlines
+// Helper to parse keys correctly, handling escaped newlines and accidental quotes
 function parseKey(key) {
   if (!key) return '';
+  let cleaned = key.trim();
+  // Remove wrapping quotes if the user copied them from .env file
+  if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+    cleaned = cleaned.substring(1, cleaned.length - 1);
+  }
   // Replace literal '\n' characters with actual newlines if present
-  return key.trim().replace(/\\n/g, '\n');
+  return cleaned.replace(/\\n/g, '\n');
 }
 
 function ensureKeyFiles() {

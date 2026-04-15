@@ -4,11 +4,16 @@ import os from 'os';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-// Helper to parse keys correctly, handling escaped newlines
+// Helper to parse keys correctly, handling escaped newlines and accidental quotes
 function parseKey(key) {
   if (!key) return '';
+  let cleaned = key.trim();
+  // Remove wrapping quotes if the user copied them from .env file
+  if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+    cleaned = cleaned.substring(1, cleaned.length - 1);
+  }
   // Replace literal '\n' characters with actual newlines if present
-  return key.trim().replace(/\\n/g, '\n');
+  return cleaned.replace(/\\n/g, '\n');
 }
 
 // Helper for Netopia. Creates temporary key files since the Netopia package expects file paths.
@@ -24,6 +29,10 @@ function ensureKeyFiles() {
     throw new Error('CONFIG_MISSING: Cheile de criptare Lipsesc (Public/Private Key)');
   }
 
+  // Debug fingerprints (safe to log - shows length and last 10 chars)
+  console.log('Key Check - Public Key Length:', pubKey.length, 'End:', pubKey.slice(-10).replace(/\n/g, '\\n'));
+  console.log('Key Check - Private Key Length:', privKey.length, 'End:', privKey.slice(-10).replace(/\n/g, '\\n'));
+
   // Always write to ensure they are fresh and correctly formatted
   fs.writeFileSync(pubKeyPath, pubKey);
   fs.writeFileSync(privKeyPath, privKey);
@@ -32,7 +41,7 @@ function ensureKeyFiles() {
 }
 
 export default async function handler(req, res) {
-  const { phone, name } = req.query;
+  const { phone, name, email } = req.query;
   
   if (!phone) {
     return res.status(400).send('Lipsește numărul de telefon (phone) din URL.');
@@ -74,8 +83,13 @@ export default async function handler(req, res) {
         billing: {
           firstName: name || 'Client',
           lastName: 'Turist',
-          email: 'contact@turistintransilvania.com',
-          phone: phone
+          email: email || 'contact@turistintransilvania.com',
+          phone: phone,
+          // Mandatory fields for many Netopia accounts
+          address: 'Strada Principala 1',
+          city: 'Brasov',
+          country: 'Romania',
+          zip: '100001'
         }
       }
     };
