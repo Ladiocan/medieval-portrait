@@ -6,7 +6,5 @@
   "scripts": {
     "build": "echo 'Building...'"
   },
-  "dependencies": {
-    "@bogdan-nita/netopia-card": "^1.1.3"
-  }
+  "dependencies": {}
 }

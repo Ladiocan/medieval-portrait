@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plată Confirmată | Portret Medieval</title>
+    <title>Plată Confirmată | Medieval Portrait</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     <style>
         body {
@@ -17,7 +17,8 @@
             align-items: center;
             height: 100vh;
             text-align: center;
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('assets/img/hero-bg.jpg');
+            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)),
+                              linear-gradient(135deg, #290606, #1a1a1a);
             background-size: cover;
             background-position: center;
         }
@@ -27,6 +28,7 @@
             border: 2px solid #8b7355;
             border-radius: 8px;
             max-width: 600px;
+            margin: 1rem;
             box-shadow: 0 0 20px rgba(244, 208, 63, 0.2);
         }
         h1 {
@@ -63,15 +65,59 @@
             margin-bottom: 20px;
         }
     </style>
+    <script>
+        // Detect language from URL or referrer
+        function getLang() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('lang') || 'ro';
+        }
+
+        const texts = {
+            ro: {
+                title: 'Tranzacție Realizată',
+                message: 'Plata ta pentru portret a fost procesată cu succes.<br>Te rugăm să te întorci în conversația de WhatsApp. Un nou mesaj îți va confirma pașii următori imediat ce sistemul nostru procesează statusul de la Netopia.',
+                button: 'Întoarce-te pe WhatsApp'
+            },
+            en: {
+                title: 'Transaction Complete',
+                message: 'Your portrait payment was successfully processed.<br>Please return to the WhatsApp conversation. A new message will confirm the next steps as soon as our system processes the status from Netopia.',
+                button: 'Return to WhatsApp'
+            },
+            de: {
+                title: 'Transaktion Abgeschlossen',
+                message: 'Ihre Porträtzahlung wurde erfolgreich verarbeitet.<br>Bitte kehren Sie zur WhatsApp-Konversation zurück. Eine neue Nachricht wird die nächsten Schritte bestätigen.',
+                button: 'Zurück zu WhatsApp'
+            },
+            hu: {
+                title: 'Tranzakció Sikeres',
+                message: 'A portréfizetés sikeresen feldolgozva.<br>Kérjük, térjen vissza a WhatsApp beszélgetésbe. Egy új üzenet megerősíti a következő lépéseket.',
+                button: 'Vissza a WhatsApp-ra'
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = getLang();
+            const t = texts[lang] || texts.ro;
+
+            document.getElementById('title').innerHTML = t.title;
+            document.getElementById('message').innerHTML = t.message;
+            document.getElementById('whatsappBtn').textContent = t.button;
+
+            // Set page title based on language
+            if (lang === 'en') {
+                document.title = 'Payment Confirmed | Medieval Portrait';
+            }
+        });
+    </script>
 </head>
 <body>
 
 <div class="container">
     <div class="icon-success">✔️</div>
-    <h1>Tranzacție Realizată</h1>
-    <p>Plata tău pentru portret a fost procesată cu succes.<br>
-    Te rugăm să te întorci în conversația de WhatsApp. Un nou mesaj îți va confirma pașii imediat ce sistemul nostru procesează statusul de la Netopia.</p>
-    <a href="whatsapp://send?phone=+40700000000" class="btn">Întoarce-te pe WhatsApp</a>
+    <h1 id="title">Tranzacție Realizată</h1>
+    <p id="message">Plata ta pentru portret a fost procesată cu succes.<br>
+    Te rugăm să te întorci în conversația de WhatsApp. Un nou mesaj îți va confirma pașii următori imediat ce sistemul nostru procesează statusul de la Netopia.</p>
+    <a id="whatsappBtn" href="https://wa.me/40771229487" class="btn">Întoarce-te pe WhatsApp</a>
 </div>
 
 </body>
