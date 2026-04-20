@@ -74,6 +74,14 @@ export default async function handler(req, res) {
   const lastName = 'Portret';
   const billingEmail = email || 'contact@turistintransilvania.com';
 
+  // Convert phone to Romanian local format (07xxxxxxxx) for Netopia
+  let billingPhone = phone.replace(/[^0-9]/g, '');
+  if (billingPhone.startsWith('40') && billingPhone.length > 9) {
+    billingPhone = '0' + billingPhone.substring(2);
+  } else if (!billingPhone.startsWith('0')) {
+    billingPhone = '0' + billingPhone;
+  }
+
   // Build Netopia XML (same format as VideoToBlog n8n workflow)
   const xml = `<?xml version="1.0" encoding="utf-8"?>
 <order type="card" id="${orderId}" timestamp="${Date.now()}">
@@ -91,7 +99,7 @@ export default async function handler(req, res) {
         <first_name>${firstName}</first_name>
         <last_name>${lastName}</last_name>
         <email>${billingEmail}</email>
-        <phone>${phone}</phone>
+        <phone>${billingPhone}</phone>
         <address>Romania</address>
       </billing>
     </contact_info>
