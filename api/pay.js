@@ -99,7 +99,7 @@ export default async function handler(req, res) {
         <first_name>${firstName}</first_name>
         <last_name>${lastName}</last_name>
         <email>${billingEmail}</email>
-        <phone>${billingPhone}</phone>
+        <mobile_phone>${billingPhone}</mobile_phone>
         <address>Romania</address>
       </billing>
     </contact_info>
