@@ -69,9 +69,10 @@ export default async function handler(req, res) {
   const confirmUrl = 'https://portrait.turistintransilvania.com/api/webhook/netopia';
   const returnUrl = 'https://portrait.turistintransilvania.com/payment-success.html';
 
-  // Billing info
-  const firstName = name || 'Client';
-  const lastName = 'Portret';
+  // Billing info — split name into firstName/lastName
+  const nameParts = (name || '').trim().split(/\s+/);
+  const firstName = nameParts[0] || 'Client';
+  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'Medieval';
   const billingEmail = email || 'contact@turistintransilvania.com';
 
   // Convert phone to Romanian local format (07xxxxxxxx) for Netopia
