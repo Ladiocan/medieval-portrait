@@ -79,6 +79,16 @@ export default async function handler(req, res) {
     const actionMatch = xml.match(/<action>(.*?)<\/action>/);
     const action = actionMatch ? actionMatch[1] : 'unknown';
 
+    // Extract billing info for Oblio Integrations
+    const firstNameMatch = xml.match(/<first_name>(.*?)<\/first_name>/);
+    const lastNameMatch = xml.match(/<last_name>(.*?)<\/last_name>/);
+    const emailMatch = xml.match(/<email>(.*?)<\/email>/);
+    const mobileMatch = xml.match(/<mobile_phone>(.*?)<\/mobile_phone>/);
+    
+    const clientName = `${firstNameMatch ? firstNameMatch[1] : ''} ${lastNameMatch ? lastNameMatch[1] : ''}`.trim() || 'Client Autogenerat';
+    const clientEmail = emailMatch ? emailMatch[1] : '';
+    const clientPhone = mobileMatch ? mobileMatch[1] : '';
+
     // Extract error info if present
     const errorCodeMatch = xml.match(/<error code="(\d+)">(.*?)<\/error>/);
     const errorCode = errorCodeMatch ? errorCodeMatch[1] : '0';
@@ -103,7 +113,10 @@ export default async function handler(req, res) {
               status: 'paid',
               action: action,
               orderId: orderId,
-              source: 'netopia_ipn'
+              source: 'netopia_ipn',
+              clientName: clientName,
+              clientEmail: clientEmail,
+              clientPhone: clientPhone || phone
             })
           });
           console.log('N8N notified successfully for payment:', orderId);

@@ -67,8 +67,10 @@ export default async function handler(req, res) {
   const amount = "10.00";
   const currency = "RON";
   const details = "Portret Medieval - Video Animation";
-  const confirmUrl = 'https://portrait.turistintransilvania.com/api/webhook/netopia';
-  const returnUrl = 'https://portrait.turistintransilvania.com/payment-success.html';
+  const protocol = req.headers['x-forwarded-proto'] || (req.headers.host && req.headers.host.includes('localhost') ? 'http' : 'https');
+  const baseUrl = `${protocol}://${req.headers.host || 'portrait.turistintransilvania.com'}`;
+  const confirmUrl = `${baseUrl}/api/webhook/netopia`;
+  const returnUrl = `${baseUrl}/payment-success.html`;
 
   // Billing info — split name into firstName/lastName
   const nameParts = (name || '').trim().split(/\s+/);
