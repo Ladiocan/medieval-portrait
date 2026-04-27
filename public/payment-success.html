@@ -76,22 +76,50 @@
             ro: {
                 title: 'Tranzacție Realizată',
                 message: 'Plata ta pentru portret a fost procesată cu succes.<br>Te rugăm să te întorci în conversația de WhatsApp. Un nou mesaj îți va confirma pașii următori imediat ce sistemul nostru procesează statusul de la Netopia.',
-                button: 'Întoarce-te pe WhatsApp'
+                button: 'Întoarce-te pe WhatsApp',
+                pageTitle: 'Plată Confirmată | Medieval Portrait'
             },
             en: {
                 title: 'Transaction Complete',
                 message: 'Your portrait payment was successfully processed.<br>Please return to the WhatsApp conversation. A new message will confirm the next steps as soon as our system processes the status from Netopia.',
-                button: 'Return to WhatsApp'
+                button: 'Return to WhatsApp',
+                pageTitle: 'Payment Confirmed | Medieval Portrait'
             },
             de: {
                 title: 'Transaktion Abgeschlossen',
-                message: 'Ihre Porträtzahlung wurde erfolgreich verarbeitet.<br>Bitte kehren Sie zur WhatsApp-Konversation zurück. Eine neue Nachricht wird die nächsten Schritte bestätigen.',
-                button: 'Zurück zu WhatsApp'
+                message: 'Ihre Porträtzahlung wurde erfolgreich verarbeitet.<br>Bitte kehren Sie zur WhatsApp-Konversation zurück. Eine neue Nachricht wird die nächsten Schritte bestätigen, sobald unser System den Status von Netopia verarbeitet.',
+                button: 'Zurück zu WhatsApp',
+                pageTitle: 'Zahlung Bestätigt | Medieval Portrait'
             },
             hu: {
                 title: 'Tranzakció Sikeres',
-                message: 'A portréfizetés sikeresen feldolgozva.<br>Kérjük, térjen vissza a WhatsApp beszélgetésbe. Egy új üzenet megerősíti a következő lépéseket.',
-                button: 'Vissza a WhatsApp-ra'
+                message: 'A portréfizetés sikeresen feldolgozva.<br>Kérjük, térjen vissza a WhatsApp beszélgetésbe. Egy új üzenet megerősíti a következő lépéseket, amint rendszerünk feldolgozza a Netopia állapotát.',
+                button: 'Vissza a WhatsApp-ra',
+                pageTitle: 'Fizetés Megerősítve | Medieval Portrait'
+            },
+            es: {
+                title: 'Transacción Completada',
+                message: 'Tu pago por el retrato se procesó con éxito.<br>Por favor, regresa a la conversación de WhatsApp. Un nuevo mensaje confirmará los próximos pasos tan pronto como nuestro sistema procese el estado de Netopia.',
+                button: 'Volver a WhatsApp',
+                pageTitle: 'Pago Confirmado | Medieval Portrait'
+            },
+            fr: {
+                title: 'Transaction Réalisée',
+                message: 'Votre paiement pour le portrait a été traité avec succès.<br>Veuillez retourner dans la conversation WhatsApp. Un nouveau message confirmera les prochaines étapes dès que notre système aura traité le statut de Netopia.',
+                button: 'Retour sur WhatsApp',
+                pageTitle: 'Paiement Confirmé | Medieval Portrait'
+            },
+            it: {
+                title: 'Transazione Completata',
+                message: 'Il pagamento per il tuo ritratto è stato elaborato con successo.<br>Ti preghiamo di tornare alla conversazione WhatsApp. Un nuovo messaggio confermerà i prossimi passi non appena il nostro sistema elaborerà lo stato da Netopia.',
+                button: 'Torna su WhatsApp',
+                pageTitle: 'Pagamento Confermato | Medieval Portrait'
+            },
+            pl: {
+                title: 'Transakcja Zakończona',
+                message: 'Płatność za portret została pomyślnie przetworzona.<br>Proszę wrócić do rozmowy na WhatsApp. Nowa wiadomość potwierdzi kolejne kroki, gdy nasz system przetworzy status z Netopia.',
+                button: 'Wróć na WhatsApp',
+                pageTitle: 'Płatność Potwierdzona | Medieval Portrait'
             }
         };
 
@@ -102,11 +130,7 @@
             document.getElementById('title').innerHTML = t.title;
             document.getElementById('message').innerHTML = t.message;
             document.getElementById('whatsappBtn').textContent = t.button;
-
-            // Set page title based on language
-            if (lang === 'en') {
-                document.title = 'Payment Confirmed | Medieval Portrait';
-            }
+            document.title = t.pageTitle;
         });
     </script>
 </head>

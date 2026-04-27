@@ -181,6 +181,8 @@ async function handleSubmit(e) {
 
     // Mark as generated so next visit shows "already generated" message
     markAsGenerated();
+    // Update buy links with user's email/name
+    updateBuyLinks();
   } catch (err) {
     console.error(err);
     alert('A apărut o eroare la procesarea portretului. Încearcă din nou.');
@@ -199,6 +201,19 @@ function updateWhatsAppLinks() {
   const btns = document.querySelectorAll('#whatsappBtn, #alreadyWhatsappBtn');
   btns.forEach((btn) => {
     btn.href = url;
+  });
+}
+
+// ─── Buy links ────────────────────────────────────────────────────────────────
+function updateBuyLinks() {
+  const emailInput = $('#email');
+  const nameInput = $('#name');
+  const email = (emailInput && emailInput.value) || '';
+  const name = (nameInput && nameInput.value) || '';
+  const buyUrl = `/api/pay?phone=web-${Date.now()}&name=${encodeURIComponent(name || 'Client')}&email=${encodeURIComponent(email)}`;
+  const btns = document.querySelectorAll('#alreadyBuyBtn, #successBuyBtn');
+  btns.forEach((btn) => {
+    btn.href = buyUrl;
   });
 }
 
@@ -248,6 +263,9 @@ function init() {
 
   // Set WhatsApp links
   updateWhatsAppLinks();
+
+  // Set Buy links
+  updateBuyLinks();
 }
 
 
@@ -274,6 +292,7 @@ const translations = {
     whatsappBtn: 'Trimite pe WhatsApp',
     alreadyTitle: 'Ai atins limita de generare!',
     alreadyText: 'Ai generat deja un portret pe site. Mai poți genera pe WhatsApp un portret gratuit — trimite-ne o poză!',
+    buyBtn: '<i class="fas fa-shopping-cart"></i> Cumpără un portret — 5 RON',
   },
   en: {
     labelName: 'Your Name',
@@ -296,6 +315,7 @@ const translations = {
     whatsappBtn: 'Send on WhatsApp',
     alreadyTitle: 'Generation limit reached!',
     alreadyText: 'You\'ve already generated a portrait on the site. You can still generate a free portrait on WhatsApp — send us a photo!',
+    buyBtn: '<i class="fas fa-shopping-cart"></i> Buy a portrait — 5 RON',
   },
   de: {
     labelName: 'Dein Name',
@@ -318,6 +338,7 @@ const translations = {
     whatsappBtn: 'Auf WhatsApp senden',
     alreadyTitle: 'Generierungslimit erreicht!',
     alreadyText: 'Du hast bereits ein Porträt auf der Seite erstellt. Du kannst auf WhatsApp noch ein kostenloses Porträt generieren — schick uns ein Foto!',
+    buyBtn: '<i class="fas fa-shopping-cart"></i> Porträt kaufen — 5 RON',
   },
   hu: {
     labelName: 'Neved',
@@ -340,6 +361,7 @@ const translations = {
     whatsappBtn: 'Küldés WhatsAppon',
     alreadyTitle: 'Generálási limit elérve!',
     alreadyText: 'Már készítettél egy portrét az oldalon. WhatsAppon még generálhatsz egy ingyenes portrét — küldj nekünk egy fotót!',
+    buyBtn: '<i class="fas fa-shopping-cart"></i> Portré vásárlás — 5 RON',
   },
   es: {
     labelName: 'Tu nombre',
@@ -362,6 +384,7 @@ const translations = {
     whatsappBtn: 'Enviar por WhatsApp',
     alreadyTitle: '¡Límite de generación alcanzado!',
     alreadyText: 'Ya generaste un retrato en el sitio. ¡Aún puedes generar un retrato gratis por WhatsApp — envíanos una foto!',
+    buyBtn: '<i class="fas fa-shopping-cart"></i> Comprar retrato — 5 RON',
   },
   fr: {
     labelName: 'Votre nom',
@@ -384,6 +407,7 @@ const translations = {
     whatsappBtn: 'Envoyer sur WhatsApp',
     alreadyTitle: 'Limite de génération atteinte !',
     alreadyText: 'Vous avez déjà généré un portrait sur le site. Vous pouvez encore générer un portrait gratuit sur WhatsApp — envoyez-nous une photo !',
+    buyBtn: '<i class="fas fa-shopping-cart"></i> Acheter un portrait — 5 RON',
   },
   it: {
     labelName: 'Il tuo nome',
@@ -406,6 +430,7 @@ const translations = {
     whatsappBtn: 'Invia su WhatsApp',
     alreadyTitle: 'Limite di generazione raggiunto!',
     alreadyText: 'Hai già generato un ritratto sul sito. Puoi ancora generare un ritratto gratuito su WhatsApp — inviaci una foto!',
+    buyBtn: '<i class="fas fa-shopping-cart"></i> Acquista ritratto — 5 RON',
   },
   pl: {
     labelName: 'Twoje imię',
@@ -428,6 +453,7 @@ const translations = {
     whatsappBtn: 'Wyślij na WhatsApp',
     alreadyTitle: 'Osiągnięto limit generowania!',
     alreadyText: 'Wygenerowałeś już portret na stronie. Możesz jeszcze wygenerować darmowy portret na WhatsApp — wyślij nam zdjęcie!',
+    buyBtn: '<i class="fas fa-shopping-cart"></i> Kup portret — 5 RON',
   },
 };
 
@@ -460,6 +486,9 @@ function applyTranslations(lang) {
 
   // Update WhatsApp links when language changes
   updateWhatsAppLinks();
+
+  // Update Buy links when language changes
+  updateBuyLinks();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

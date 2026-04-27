@@ -758,3 +758,28 @@ input:focus {
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }
+
+/* ─── Buy Button ─────────────────────────────────────────────────────────── */
+.buy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.9rem 2rem;
+    background: linear-gradient(135deg, var(--secondary), #e6c645);
+    color: var(--dark);
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+}
+
+.buy-btn:hover {
+    background: linear-gradient(135deg, #e6c645, var(--secondary));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
