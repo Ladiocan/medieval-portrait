@@ -28,6 +28,15 @@ function hasAlreadyGenerated() {
 function markAsGenerated() {
   try {
     localStorage.setItem(STORAGE_KEY, 'true');
+    // Save user details for buy links
+    const emailInput = $('#email');
+    const nameInput = $('#name');
+    if (emailInput && emailInput.value) {
+      localStorage.setItem('mp_email', emailInput.value);
+    }
+    if (nameInput && nameInput.value) {
+      localStorage.setItem('mp_name', nameInput.value);
+    }
   } catch {
     console.warn('Could not write to localStorage');
   }
@@ -208,9 +217,14 @@ function updateWhatsAppLinks() {
 function updateBuyLinks() {
   const emailInput = $('#email');
   const nameInput = $('#name');
-  const email = (emailInput && emailInput.value) || '';
-  const name = (nameInput && nameInput.value) || '';
-  const buyUrl = `/api/pay?phone=web-${Date.now()}&name=${encodeURIComponent(name || 'Client')}&email=${encodeURIComponent(email)}`;
+  // Try form fields first, then localStorage (for "already generated" page)
+  let email = (emailInput && emailInput.value) || '';
+  let name = (nameInput && nameInput.value) || '';
+  try {
+    if (!email) email = localStorage.getItem('mp_email') || '';
+    if (!name) name = localStorage.getItem('mp_name') || '';
+  } catch (e) {}
+  const buyUrl = `/api/pay?phone=0700000000&name=${encodeURIComponent(name || 'Client')}&email=${encodeURIComponent(email)}`;
   const btns = document.querySelectorAll('#alreadyBuyBtn, #successBuyBtn');
   btns.forEach((btn) => {
     btn.href = buyUrl;
