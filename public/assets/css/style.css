@@ -285,15 +285,8 @@ input[type="email"]:focus {
 /* Success Message */
 .success-message {
     display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--white);
-    z-index: 1000;
-    overflow-y: auto;
-    padding: 2rem;
+    background-color: transparent;
+    padding: 2rem 0;
 }
 
 .success-content {

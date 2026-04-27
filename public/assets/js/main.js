@@ -50,6 +50,8 @@ function toggleLoading(show) {
 function showSuccess(show) {
   const success = $('#successMessage');
   if (success) success.classList.toggle('show', show);
+  const form = $('#portraitForm');
+  if (form) form.style.display = show ? 'none' : 'block';
 }
 
 function showAlreadyGenerated() {
